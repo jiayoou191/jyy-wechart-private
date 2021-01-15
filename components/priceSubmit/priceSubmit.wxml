@@ -1,0 +1,123 @@
+<!-- components/priceSubmit/priceSubmit.wxml -->
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<view id="priceSubmit" class="over">
+    <view class="priceSubmit_base {{zIndex?'z_index':''}}">
+        <view class="priceSubmit_left over">
+            <!-- <button class="priceSubmit_left_button" hover-class="priceSubmit_left_button_active" open-type='contact'>
+                <van-icon hover-class="priceSubmit_left_icon_active" class="priceSubmit_left_icon" name="service-o" />
+            </button> -->
+            <view  bindtap="handleShipperChange" class="priceSubmit_left_button" hover-class="priceSubmit_left_button_active">
+                <image wx:if="{{isShipperOrConsignee=='Shipper'}}" class='image_width' src="../../pages/image/icon/fa.png"></image>
+                <image wx:if="{{isShipperOrConsignee=='Consignee'}}" class='image_width' src="../../pages/image/icon/shou.png"></image>
+            </view>
+            <view class="priceSubmit_left_gujia">{{language.valuation}}:</view>
+            <!-- 已经登陆用户且价格完整的数据 -->
+            <view wx:if="{{NeedPlan && NeedPlan.isLogin && !NeedPlan.broken}}" class="priceSubmit_price">
+                <view class="currency_switch" bindtap="selectCurrency" hover-class="clickColor">
+                    <!-- {{NeedPlan.CURRENCY}} -->
+                    {{currency}}
+                    <view  wx:if="{{currencySwitch}}" class="currency_icon_parent">
+                        <image  class="currency_icon" src="../../pages/image/icon/icon-dropDown.png" />
+                    </view>
+                </view>
+                <view bindtap="priceDetailShow" class="priceDetail relative">
+                    <!-- {{common.priceChangeShow(price)}} -->
+                    <!-- <text>{{incoterms}}--{{isShipperOrConsignee}}</text> -->
+                    <!-- {{totalPrice!=null?common.priceChangeShow_v2(totalPrice):common.priceChangeShow(common.getPriceValueDisplay(currency,needPlan))}} -->
+                    <text wx:if="{{NeedPlan.transportType=='Express'}}">{{totalPrice!=null?common.priceChangeShow_v2(totalPrice):common.priceChangeShow(common.getPriceValueDisplay(currency,needPlan))}}</text>
+                    <text wx:if="{{NeedPlan.transportType!='Express'&&isShipperOrConsignee=='Shipper'}}">{{common.priceChangeShow_v2(common.getTotalPrice(NeedPlan,currency,incoterms,formData)-common.getBuyerOrSellerPrice(needPlan,currency,incoterms,'buyer'))}}</text>
+                    <text wx:if="{{NeedPlan.transportType!='Express'&&isShipperOrConsignee=='Consignee'}}">{{common.priceChangeShow_v2(common.getBuyerOrSellerPrice(NeedPlan,currency,incoterms,'buyer'))}}</text>
+
+                    <!-- <view wx:if="{{hasPriceDetail}}" class="price_detail">
+                        <image class="price_detail_icon {{!priceModalShow?'rotate':''}}" src="../../pages/image/icon/icon-dropDown.png" />
+                    </view> -->
+                </view>
+                
+            </view>
+            <!-- 已经登陆用户但价格不完整的数据 -->
+            <view wx:if="{{NeedPlan && NeedPlan.isLogin && NeedPlan.broken}}" class="priceSubmit_price">
+                {{NeedPlan.CURRENCY}}
+                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+            </view>
+            <!-- 未登陆用户 数据完整 -->
+            <view wx:if="{{NeedPlan && !NeedPlan.isLogin && !NeedPlan.broken}}" class="priceSubmit_price">
+                <!-- {{NeedPlan.CURRENCY}} -->
+                <image class="mosaicLoginFalse" src="../../pages/image/icon/mosaic.png"></image>
+                {{common.parseFloat(NeedPlan.priceValueLoginFalse)}}
+            </view>
+            <!-- 未登陆用户 数据不完整 -->
+            <view wx:if="{{NeedPlan && !NeedPlan.isLogin && NeedPlan.broken}}" class="priceSubmit_price">
+                {{NeedPlan.CURRENCY}}
+                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+            </view>
+        </view>
+        <view class="priceSubmit_right">
+            <!-- 已经登陆用户且价格完整的数据 -->
+            <button wx:if="{{NeedPlan && NeedPlan.isLogin && !NeedPlan.broken}}" class="kefu_lianxi" hover-class="kefu_lianxi_active" bindtap="handleClick">
+                <text wx:if="{{isSubmit}}">{{language.confirmOrder}}</text>
+                <text wx:else>{{language.next}}</text>
+            </button>
+            <!-- 已经登陆用户但价格不完整的数据 -->
+            <button wx:if="{{NeedPlan && NeedPlan.isLogin && NeedPlan.broken}}" class="kefu_lianxi" hover-class="kefu_lianxi_active" open-type='contact'>
+                {{language.concact}}
+            </button>
+            <!-- 未登陆用户 -->
+            <button wx:if="{{NeedPlan &&  !NeedPlan.isLogin }}" disabled="{{true}}" class="kefu_lianxi_isnotlogin" hover-class="kefu_lianxi_active" bindtap="handleClick">
+                {{language.loginOrder}}
+            </button>
+        </view>
+        <van-popup
+            show="{{ currencyShow }}"
+            position="bottom"
+            custom-style="box-sizing;border-box;padding: 0 32rpx;max-height: 50%;"
+            bind:close="handleCurrencyClose"
+        >
+            <view wx:for="{{currencies}}" data-currency="{{item}}" bindtap="currencyChange" class="currency_item {{item==currency?'currency_active':''}}" hover-class="clickColor" wx:key="index">
+                {{item}}
+            </view>
+        </van-popup>
+
+    
+    </view>
+</view>
+
+
+<!-- <view wx:if="{{NeedPlan.transportType != 'Express'}}"> -->
+
+    <van-popup
+    
+            show="{{ shipperVisible }}"
+            position="bottom"
+            custom-style="border-radius:24rpx 24rpx 0px 0px;overflow:hidden;"
+            bind:close="handleShipperVisibleClose"
+        >
+            <view wx:if="{{NeedPlan.transportType != 'Express'}}" class="sellerFee_modal">
+                    <view data-type="Shipper" bindtap='handleTypeChoose' class="sellerFee clearFix" hover-class="sellerFee_active">
+                        <!-- <view class="left">{{language.sellerFee}}:</view> -->
+                        <view class="left">{{language.iamshipper}}</view>
+
+                        <view class="right">
+                            <!-- {{needPlan.currency}}{{common.priceChangeShow_v2(sellerFee)}} -->
+                            <!-- {{currency}} 100 -->
+                            {{currency}}{{common.priceChangeShow_v2(common.getTotalPrice(NeedPlan,currency,incoterms,formData)-common.getBuyerOrSellerPrice(needPlan,currency,incoterms,'buyer'))}}
+                        </view>
+                    </view>
+                    <view data-type="Consignee" bindtap='handleTypeChoose' class="sellerFee clearFix" hover-class="sellerFee_active">
+                        <view class="left">{{language.iamconsignee}}</view>
+                        <view class="right">
+                            {{currency}}{{common.priceChangeShow_v2(common.getBuyerOrSellerPrice(NeedPlan,currency,incoterms,'buyer'))}}
+                            <!-- {{currency}} 200 -->
+                        </view>
+                    </view>
+                </view>
+                <view wx:if="{{NeedPlan.transportType == 'Express'}}" class="sellerFee_modal">
+                    <view data-type="Shipper" bindtap='handleTypeChoose' class="sellerFee clearFix" hover-class="sellerFee_active">
+                        <!-- <view class="left">{{language.sellerFee}}:</view> -->
+                        <view class="left">{{language.iamshipper}}</view>
+                    </view>
+                    <view data-type="Consignee" bindtap='handleTypeChoose' class="sellerFee clearFix" hover-class="sellerFee_active">
+                        <view class="left">{{language.iamconsignee}}</view>
+                    </view>
+                </view>
+        </van-popup>
+<!-- </view> -->

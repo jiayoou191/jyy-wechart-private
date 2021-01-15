@@ -1,0 +1,9 @@
+<!-- components/mapChoose/mapChoose.wxml -->
+<view class="map_choose_card">
+    <van-cell title="{{addressFrom}}" data-title="from" bindtap="handleClick" is-link>
+        <van-icon slot="icon" name="https://jyy-binary-storage.oss-cn-shanghai.aliyuncs.com/files/icon_start.png" custom-class="cell_icon" size="16px" />
+    </van-cell>
+    <van-cell custom-class="map_choose_bottom" title="{{addressTo}}" data-title="to" bindtap="handleClick" is-link>
+        <van-icon slot="icon" name="https://jyy-binary-storage.oss-cn-shanghai.aliyuncs.com/files/icon-finsish.png" custom-class="cell_icon" size="16px" />
+    </van-cell>
+</view>

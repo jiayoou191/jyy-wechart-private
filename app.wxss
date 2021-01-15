@@ -1,0 +1,89 @@
+/**app.wxss**/
+/* .container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+}  */
+page {
+  height: 100%;
+}
+
+.clearFix:after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  clear: both;
+}
+
+.left {
+  float: left;
+}
+
+.overflow_auto {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.clickColor_active {
+  background: red;
+}
+
+.right {
+  float: right;
+}
+
+.border_bottom {
+  border-bottom: 1px solid #f5f5f5;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex_space_between {
+  justify-content: space-between;
+}
+
+.flex_grow {
+  flex: 1;
+}
+
+.align_items_center {
+  align-items: center;
+}
+
+.image_center {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 单行文字溢出展示省略号 */
+.ellipsis {
+  overflow: hidden;
+  /*文本不会换行*/
+  white-space: nowrap;
+  /*当文本溢出包含元素时，以省略号表示超出的文本*/
+  text-overflow: ellipsis;
+}
+
+view.van-submit-bar__text {
+  text-align: left;
+}
+
+/* view.van-search {
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.1), 0px 1px 0px 0px rgba(221, 221, 221, 1);
+  border-radius: 0px 0px 14px 14px;
+} */
+
+
+view.van-hairline--top-bottom:after {
+  border: none;
+
+}

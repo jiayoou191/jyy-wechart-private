@@ -1,0 +1,44 @@
+<!-- pages/home/home.wxml -->
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<view>
+    <navigationBar wx:if="{{registrationResult != null}}" totalBar="{{totalBar}}" navBarHeight="{{navBarHeight}}" bind:onLanguage="handleLanguage" toolBarHeight="{{toolBarHeight}}" userPhoto="{{userPhoto}}" />
+    
+    <view class="home" style="margin-top:{{totalBar*2}}rpx;height:calc(100%-{{totalBar*2}}rpx)">
+        <view wx:if="{{localFlag}}" class="home_head">{{language.home_title}}</view>
+        <!-- <view>{{localFlag}}</view> -->
+         <!-- <view>{{common.priceChangeShow_v2('22523.12+CNY 100')}}</view> -->
+       <view class="home_goods_search">
+            <skeletonItem wx:if="{{!itemTypes}}"></skeletonItem>
+            <itemTypeChoose wx:if="{{itemTypes}}" bind:onClick='handleMore' itemTypes="{{itemTypes}}"></itemTypeChoose>
+        </view>
+        <view wx:if="{{localFlag}}" class="home_map">
+            <mapChoose bind:onClick='handleMapClick'></mapChoose>
+        </view>
+        <view class="home_search">
+            <button class="home_search_style" hover-class="home_search_style_active" wx:if="{{registrationResult && registrationResult.user && !registrationResult.user.phone}}" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">
+                {{language.home_search}}
+            </button>
+            <button class="home_search_style" hover-class="home_search_style_active" wx:if="{{registrationResult&& registrationResult.user && registrationResult.user.phone}}" bindtap="handleSearch">
+                {{language.home_search}}
+            </button>
+            <!-- <button open-type='share' class="home_search_style">分享</button> -->
+            <button class="home_search_style" hover-class="home_search_style_active" wx:if="{{ !registrationResult }}" open-type="getUserInfo" bindtap="handleGetUserinfo" bindgetuserinfo="{{getUserInfo}}">
+                {{language.home_login}}
+            </button>
+        </view>
+        <historySearch wx:if="{{localFlag}}"  bind:onClick="handleHistoryClick" searchHistoryGetIn='{{searchHistoryGetIn}}'></historySearch>
+        <van-notify id="van-notify" />
+        <van-toast id="van-toast" />
+        <view class="kong"></view>
+        <view class="lianxi over">
+            <view class="lianxi_wrapper">
+                <button class="lianxi_kefu_button help" bindtap='handleCallPhone'>
+                    {{language.home_help}}
+                </button>
+                <button class="lianxi_kefu_button lianxikefu" open-type='contact'>
+                    {{language.home_service}}
+                </button>
+            </view>
+        </view>
+    </view>
+</view>

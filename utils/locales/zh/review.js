@@ -1,0 +1,35 @@
+//review页面
+
+export default {
+    goodsInfo: '货物信息',
+    empty: '暂无数据',
+    tradeTerms: '贸易条款',
+    totalPrice: '货物总价',
+    input: '输入',
+    confirm: '确定',
+    inputNumber: '请输入数字',
+    tariff: '关税',
+    inputPercent: '请输入百分比数值',
+    vat: '增值税',
+    departure: '起运港费用',
+    inland: '内陆运输费',
+    pier: '口岸作业费',
+    customs: '清关舱单费',
+    document: '文件操作费',
+    wholeProcess: '全程',
+    day: '天',
+    weekly: '每周',
+    destination: '目的港费用',
+    trunkTransportation: '干线运输费用',
+    sellerFee: '卖家费用',
+    buyerFee: '买家费用',
+    all: '共',
+    piece: '件',
+    boxPlan: '装箱方案',
+    supplier: '承运公司',
+    wholeProcess: '全程',
+    day: '天',
+
+    price:'价格',
+    all_add:'总计'
+}

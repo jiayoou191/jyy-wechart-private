@@ -1,0 +1,32 @@
+//review页面
+
+export default {
+    goodsInfo: 'Cargo details',
+    empty: 'No data',
+    tradeTerms: 'Incoterms',
+    totalPrice: 'Total value',
+    input: '',
+    confirm: 'confirm',
+    inputNumber: 'please enter numbers',
+    tariff: 'Duty',
+    inputPercent: 'Percentage value',
+    vat: 'Vat',
+    departure: 'Original',
+    inland: 'Local Haulage',
+    pier: 'Port Charge',
+    customs: 'Customs Fee',
+    document: 'File operation fee',
+    wholeProcess: 'Total ',
+    day: 'days',
+    weekly: 'ETD',
+    destination: 'Destination',
+    trunkTransportation: 'MainlineTransportationCosts',
+    sellerFee: 'Seller fees',
+    buyerFee: 'Buyer fees',
+    all: 'total ',
+    piece: '',
+    boxPlan: 'Plan',
+    supplier: 'Carrier',
+    price:'Price',
+    all_add:'Total'
+}

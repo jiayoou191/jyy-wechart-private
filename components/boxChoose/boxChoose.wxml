@@ -1,0 +1,24 @@
+<!-- components/boxChoose/boxChoose.wxml -->
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<view>
+    <van-popup show="{{ isShow }}" round position="bottom" bind:close="onClose">
+        <view class="box_choose">
+            <view class="box_choose_name">{{language.boxPlan}}</view>
+            <view class="box_choose_ok_cancel">
+                <view bindtap='handleCancel' hover-class="box_choose_cancel_active" class="box_choose_cancel">
+                    {{language.cancel}}
+                </view>
+                <view bindtap='handleOk' hover-class="box_choose_ok_active" class="box_choose_ok">
+                    {{language.confirm}}
+                </view>
+            </view>
+        </view>
+        <view wx:key="index" wx:if="{{ isShow }}" wx:for="{{Boxes}}">
+            <view class="box_choose_content">
+                <view class="box_choose_content_name">{{common.boxesNameEnZh(item.name , languageName)}}:</view>
+                <van-stepper class="box_choose_content_stepper" min="0" value="{{ item[item.id] }}" data-id="{{item.id}}" bind:change="handleChange" />
+            </view>
+        </view>
+        <view class="mar_top"></view>
+    </van-popup>
+</view>

@@ -1,0 +1,43 @@
+<van-notify id="van-notify" />
+<van-toast id="van-toast" />
+<van-dialog bind:cancel="handleCancel" bind:confirm="handleConfirm" id="van-dialog" />
+<view class="bookPreview">
+    <scroll-view>
+        <userInfo id="send_user" data-id="send_user" contact="{{contact['send_user']}}" title="{{language.sendUser}}" selectUser="{{sendUserName}}" bind:selectUser="selectUser"></userInfo>
+        <userInfo id="get_user" data-id="get_user" bind:changeFormData="changeFormData" contact="{{contact['get_user']}}" title="{{language.getUser}}" selectUser="{{getUserName}}" bind:selectUser="selectUser"></userInfo>
+        <userInfo id="notify_user" data-id="notify_user" rightTitle="{{language.same}}" bind:checkedChange="checkedChange" contact="{{contact['notify_user']}}" hasCheckBox title="{{language.notify}}" selectUser="{{notifyUserName}}" bind:selectUser="selectUser"></userInfo>
+        <view class="position_bottom">
+            <view wx:if="{{!timeOut }}" class="timeOut flex">
+                <view wx:if="{{languageName == '中文'}}">{{language.please}}</view>
+                <view wx:if="{{languageName != '中文'}}">{{language.enplease}}</view>
+                <view class="timeCount">{{timeText}}</view>
+                <view wx:if="{{languageName == '中文'}}">{{language.submitOrder}}</view>
+            </view>
+      
+            <view wx:else class="timeOut">{{language.timeOut}}</view>
+            <view class="submit_parent">
+                <button wx:if="{{timeOut}}" class="submit_timeOut" bindtap="refreshQuery">
+                    {{language.submit}}
+                </button>
+                <button wx:else class="submit" bindtap="createOrder">{{language.submit}}</button>
+            </view>
+        </view>
+        <van-popup show="{{ modalShow }}" custom-style="border-radius:24rpx 24rpx 0px 0px;overflow:hidden;" position="bottom" bind:close="onModalClose">
+            <view class="modal_container">
+                <view class="modal_title">{{language.concact}}</view>
+                <view class="data_empty" wx:if="{{contacts===null||contacts.length===0}}">
+                    {{language.empty}}
+                </view>
+                <view wx:else>
+                    <view class="contacts_item" hover-class="clickColor" data-index="{{index}}" bindtap="selectedUser" wx:for="{{contacts}}" wx:key="index">
+                        <view class="flex">
+                            <view class="contacts_item_name">{{item.name}}</view>
+                            <view>{{item.phone}}</view>
+                        </view>
+                        <view class="contacts_item_address">{{item.address}}</view>
+                    </view>
+                </view>
+            </view>
+        </van-popup>
+    </scroll-view>
+</view>

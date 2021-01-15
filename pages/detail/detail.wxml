@@ -1,0 +1,19 @@
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<!-- 产品信息 -->
+<view class="detail">
+  <goods wx:if="{{query}}" query='{{query}}'></goods>
+  <!-- <view> query_id: {{query.id}}</view> -->
+  <boxChoose wx:if="{{boxes.length>0 && allPlan.length>0}}" bind:onClose='handleBoxClose' bind:onOk='handleBoxOk' bind:onCancel='handleBoxCancel' isShow='{{isShow}}' boxes='{{boxes}}' allPlan='{{allPlan}}'></boxChoose>
+  <planChoose currency="{{currency}}" isShow='{{isPlanShow}}' needPlan='{{needPlan}}' checkIndex="{{checkIndex}}" allPlan="{{allPlan}}" bind:onCancel="handlePlanClose" bind:onChoose="handlePlanNeedChoose"></planChoose>
+  <!-- <van-tabs  animated swipeable>
+  <van-tab  wx:for="{{allPlan}}" title="{{item.transportType}}"  wx:key="index">
+    <detailPlan wx:if="{{needPlan && query && allPlan.length > 0}} " allPlan='{{allPlan}}' needPlan='{{needPlan}}' query='{{query}}'></detailPlan>
+    <view class="back">{{item.id}}</view> 
+  </van-tab>
+</van-tabs> -->
+  <detailPlan planChooseIndex="{{planChooseIndex}}" currency="{{currency}}" bind:currencyChange="currencyChange" bind:onTabChange='handleTabChange' bind:onCreate="handleCreate" bind:onClick='handleBoxClick' bind:onPlanChoose='handlePlanChoose' bind:onKeFuHelp='handleKeFuHelp' wx:if="{{needPlan!=null && query!=null && allPlan!= null  }} " allPlan='{{allPlan}}' needPlan='{{needPlan}}' query='{{query}}'></detailPlan>
+  <van-dialog id="van-dialog" />
+  <van-notify id="van-notify" />
+  <van-toast id="van-toast" />
+</view>
+<!-- 商品信息 -->

@@ -1,0 +1,14 @@
+{
+  "usingComponents": {
+    "itemTypeChoose": "../../components/itemTypeChoose/itemTypeChoose",
+    "mapChoose": "../../components/mapChoose/mapChoose",
+    "historySearch": "../../components/historySearch/historySearch",
+    "skeletonItem": "../../components/skeletonItem/skeletonItem",
+    "navigationBar": "../../components/navigationBarCustom/navigationBarCustom"
+  },
+  "navigationStyle": "custom"
+
+
+
+
+}

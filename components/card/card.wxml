@@ -1,0 +1,20 @@
+<view class="card" hover-class="{{cardClickable?'clickColor':''}}" style="min-height:{{height}}px;">
+    <view hover-class="{{needAppend?'clickColor':''}}" class="title clearFix" bindtap="showDetail">
+        <view wx:if="{{icon!=''}}" class="title_left">
+            <image class="title_left_icon" src="{{icon}}" mode="widthFix" />
+        </view>
+        <!-- <text class="title_left">{{baselanguage[title]}}</text> -->
+        <text class="title_left">{{title}}</text>
+
+        <view wx:if="{{needAppend}}" class="title_right image_center">
+            <van-icon name="arrow" color="#d9d9d9" />
+        </view>
+        <view wx:if="{{hasCheckBox}}" class="title_right image_center margin_left_8">
+            <van-checkbox value="{{ checked }}" checked-color="#DC3E38" bind:change="onChange"></van-checkbox>
+        </view>
+        <view wx:if="{{rightTitle!=''}}" style="color:{{rightTitleColor}};" class="title_right">
+            {{rightTitle}}
+        </view>
+    </view>
+    <slot></slot>
+</view>

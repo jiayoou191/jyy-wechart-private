@@ -1,0 +1,1011 @@
+// ! 地址信息展示封装
+function setAddressStr(address) {
+    if (!address) return;
+    if (address.formattedAddressLine) {
+        return address.formattedAddressLine;
+    } else {
+        return address.cityName;
+    }
+}
+function getPodExtras(stage3Plan,currency){
+    var podExtras = 0;
+    var processorResult = [];
+    if(currency == 'CNY'){
+        processorResult = stage3Plan.sameCurrencySummary.processorResult;
+    }else{
+        processorResult = stage3Plan.optionalPriceSummary[currency].processorResult;
+    }
+    for(var i = 0;i < processorResult.length; i++){
+        if(processorResult)
+        if(processorResult[i].detailName == 'POD extras'){
+            podExtras += processorResult[i].value;
+        }
+    }
+    return podExtras;
+}
+// ! 订单的价格计算（含额外费用）
+function getOrderPrice(order, currency,role = 'Shipper' , isOnlyPrice=false) {
+    var price = 0;
+    var plan = null;
+    if (order.plan != null) {
+        plan = order.plan;
+    } else {
+        plan = order.expressPlan;
+    }
+    var truckPlan = {
+        one: null,
+        five: null
+    }
+    var needPlan = JSON.parse(JSON.stringify(plan));
+    if (order.doorToPortPlan) {
+        truckPlan.one = order.doorToPortPlan.plan;
+        needPlan.stage1Plan = order.doorToPortPlan.plan;
+    }
+    if (order.portToDoorPlan) {
+        truckPlan.five = order.portToDoorPlan.plan;
+        needPlan.stage5Plan = order.portToDoorPlan.plan;
+    }
+    if (order.transportType != 'Express'&&order.orderMeta.orderUserRole && ((truckPlan.one && truckPlan.five)||order.query.queryType=='All')) {
+        if (role == 'Shipper') {
+            var consiginee = getBuyerOrSellerPrice(needPlan, currency, order.orderMeta.serviceType, 'buyer');
+            var totalPrice = getPriceValueDisplay(currency, plan, true, truckPlan, order.query.queryType, true);
+            var numberIndex = getNumberIndex(totalPrice);
+            var totalCurrency = totalPrice.substring(0, numberIndex);
+            totalPrice = totalPrice.substring(numberIndex, price.length);
+            price = Math.ceil(totalPrice) - Math.ceil(consiginee);
+        } else {
+            price = Math.ceil(getBuyerOrSellerPrice(needPlan, currency, order.orderMeta.serviceType, 'buyer'));
+        }
+    } else {
+        price = getPriceValueDisplay(currency, plan, true, truckPlan, order.query.queryType, true);
+        var numberIndex = getNumberIndex(price);
+        var totalCurrency = price.substring(0, numberIndex);
+        price = price.substring(numberIndex, price.length);
+        if(order.query.queryType!='All'&&role=='Shipper'){
+            price -= Math.ceil(getPodExtras(order.plan.stage3Plan,currency));
+        }
+    }
+    // ! 额外费用的计算
+    if (order.orderMeta != null) {
+        if (order.orderMeta.serviceType === 'DDP') {
+            var total_tariff = 0;
+            var total_VAT = 0;
+            // ! DDP还要加上123段费用作为关税增值税的计算基数
+            var other_price = 0;
+            var stage1Plan = truckPlan && truckPlan.one ? truckPlan.one : plan.stage1Plan;
+            other_price = getStagefee(stage1Plan, order.orderMeta.dCategoryList[0].currency) + getStagefee(plan.stage2Plan, order.orderMeta.dCategoryList[0].currency) + getStagefee(plan.stage3Plan, order.orderMeta.dCategoryList[0].currency);
+            for (var i = 0; i < order.orderMeta.dCategoryList.length; i++) {
+                total_tariff += ((order.orderMeta.dCategoryList[i].productValue - 0) + (other_price - 0)) * (order.orderMeta.dCategoryList[i].importTaxRate - 0) / 100;
+                total_VAT += ((order.orderMeta.dCategoryList[i].productValue - 0) + (other_price - 0) + (total_tariff - 0)) * (order.orderMeta.dCategoryList[i].valueAddedTaxRate - 0) / 100;
+            }
+            if (total_tariff != 0 || total_VAT != 0) {
+                price = numbertoFixed(price - 0) + ' + ' + order.orderMeta.dCategoryList[0].currency + ' ' + numbertoFixed((total_tariff - 0) + (total_VAT - 0));
+            }
+        } else if (order.orderMeta.serviceType === 'CIF' || order.orderMeta.serviceType === 'CIP目的港') {
+            var insuranceRate = (order.orderMeta.dCategoryList[0].productValue - 0) * 1.1 * (order.orderMeta.dCategoryList[0].insuranceRate - 0) / 1000;
+            if (insuranceRate < 100) {
+                insuranceRate = 100;
+            }
+            if (insuranceRate == 100 && order.orderMeta.dCategoryList[0].currency == "EUR") {
+                insuranceRate = 13
+            }
+            if (insuranceRate == 100 && order.orderMeta.dCategoryList[0].currency == "USD") {
+                insuranceRate = 15
+            }
+            price = numbertoFixed(price - 0) + ' + ' + order.orderMeta.dCategoryList[0].currency + ' ' + numbertoFixed(insuranceRate - 0);
+        }
+    }
+    if(!isOnlyPrice){
+        return (totalCurrency ? totalCurrency : currency) + ' ' + price;
+    }else{
+        return price;
+    }
+}
+
+// ! 订单确认页面切换贸易条款总价格计算
+function getTotalPrice(needPlan, currency, incoterms, formData) {
+    formData = formData || {};
+    var price = getPriceValueDisplay(currency, needPlan);
+    if (incoterms == 'CIF' || incoterms == 'CIP目的港') {
+        var premium = (formData['CIF'] - 0) * 1.1 * 1.5 / 1000;
+        if (premium < 100) {
+            premium = 100;
+        }
+        if (currency == "USD" && premium == 100) {
+            premium = 15;
+        }
+        if (currency == "EUR" && premium == 100) {
+            premium = 13;
+        }
+        price += premium;
+    } else if (incoterms == 'DDP') {
+        var total_tariff = 0;
+        var total_VAT = 0;
+        // !DDP还要加上123段费用作为关税增值税的计算基数
+        var other_price = getStagefee(needPlan.stage1Plan, currency) + getStagefee(needPlan.stage2Plan, currency) + getStagefee(needPlan.stage3Plan, currency);
+        for (var j = 0; j < formData['DDP'].length; j++) {
+            total_tariff += (formData['DDP'][j].totalPrice - 0 + (other_price - 0)) * (formData['DDP'][j].tariff - 0) / 100;
+            total_VAT += (formData['DDP'][j].totalPrice - 0 + (other_price - 0) + total_tariff) * (formData['DDP'][j].VAT - 0) / 100;
+        }
+        price += total_tariff + total_VAT;
+    }
+    return Math.ceil(price);
+}
+
+// ! 订单确认页面切换贸易条款买卖家价格计算
+function getBuyerOrSellerPrice(needPlan, currency, incoterms, priceType, formData) {
+    
+    var price = 0;
+    formData = formData || {};
+    switch (incoterms) {
+        case 'EXW':
+        case '不选择': {
+            if (priceType == 'buyer') {
+                for (var i = 1; i < 6; i++) {
+                    price += getStagefee(needPlan['stage' + i + 'Plan'], currency);
+                }
+            } else {
+                price = 0;
+            }
+            price = Math.ceil(price);
+            break;
+        }
+        case 'FOB': {
+            if (priceType == 'buyer') {
+                price = getStagefee(needPlan.stage3Plan, currency) + getStagefee(needPlan.stage4Plan, currency) + getStagefee(needPlan.stage5Plan, currency);
+            } else {
+                price = getStagefee(needPlan.stage1Plan, currency) + getStagefee(needPlan.stage2Plan, currency);
+            }
+            price = Math.ceil(price);
+            break;
+        }
+        case 'FCA起运港': {
+            if (priceType == 'buyer') {
+                var processorResult = [];
+                if (currency == 'CNY') {
+                    processorResult = needPlan.stage2Plan.sameCurrencySummary.processorResult;
+                } else {
+                    processorResult = needPlan.stage2Plan.optionalPriceSummary[currency].processorResult;
+                }
+                for (var i = 0; i < processorResult.length; i++) {
+                    if (processorResult[i].name != 'DocumentationAndServiceFees') {
+                        price += processorResult[i].value;
+                    }
+                }
+                price += getStagefee(needPlan.stage3Plan, currency) + getStagefee(needPlan.stage4Plan, currency) + getStagefee(needPlan.stage5Plan, currency);
+            } else {
+                price = getStagefee(needPlan.stage1Plan, currency);
+                if (currency == 'CNY') {
+                    processorResult = needPlan.stage2Plan.sameCurrencySummary.processorResult;
+                } else {
+                    processorResult = needPlan.stage2Plan.optionalPriceSummary[currency].processorResult;
+                }
+                for (var i = 0; i < processorResult.length; i++) {
+                    if (processorResult[i].name == 'DocumentationAndServiceFees') {
+                        price += processorResult[i].value;
+                    }
+                }
+            }
+            price = Math.ceil(price);
+            break;
+        }
+        case 'CFR':
+        case 'CPT目的港': {
+            if (priceType == 'buyer') {
+                price = getStagefee(needPlan.stage4Plan, currency) + getStagefee(needPlan.stage5Plan, currency);
+            } else {
+                price = getStagefee(needPlan.stage1Plan, currency) + getStagefee(needPlan.stage2Plan, currency) + getStagefee(needPlan.stage3Plan, currency);
+            }
+            price = Math.ceil(price);
+            break;
+        }
+        case 'DAP': {
+            if (priceType == 'buyer') {
+              
+                if (currency == 'CNY') {
+                    processorResult = needPlan.stage4Plan.sameCurrencySummary.processorResult;
+
+                } else {
+                    processorResult = needPlan.stage4Plan.optionalPriceSummary[currency].processorResult;
+                }
+                for (var i = 0; i < processorResult.length; i++) {
+                    if (processorResult[i].name == 'CustomsClearanceAndManifestFees') {
+                        price += processorResult[i].value;
+                    }
+                }
+            } else {
+                price = getStagefee(needPlan.stage1Plan, currency) + getStagefee(needPlan.stage2Plan, currency) + getStagefee(needPlan.stage3Plan, currency) + getStagefee(needPlan.stage5Plan, currency);
+                if (currency == 'CNY') {
+                    processorResult = needPlan.stage4Plan.sameCurrencySummary.processorResult;
+                } else {
+                    processorResult = needPlan.stage4Plan.optionalPriceSummary[currency].processorResult;
+                }
+                for (var i = 0; i < processorResult.length; i++) {
+                    if (processorResult[i].name != 'CustomsClearanceAndManifestFees') {
+                        price += processorResult[i].value;
+                    }
+                }
+            }
+            price = Math.ceil(price);
+            break;
+        }
+        case 'CIP目的港':
+        case 'CIF': {
+            if (priceType == 'buyer') {
+                price = Math.ceil(getStagefee(needPlan.stage4Plan, currency) + getStagefee(needPlan.stage5Plan, currency));
+            } else {
+                price = Math.ceil(getStagefee(needPlan.stage1Plan, currency) + getStagefee(needPlan.stage2Plan, currency) + getStagefee(needPlan.stage3Plan, currency));
+                var premium = (formData['CIF'] - 0) * 1.1 * 1.5 / 1000;
+                if (premium < 100) {
+                    premium = 100;
+                }
+                if (currency == "USD" && premium == 100) {
+                    premium = 15;
+                }
+                if (currency == "EUR" && premium == 100) {
+                    premium = 13;
+                }
+                price += '+' + currency + numbertoFixed(premium);
+            }
+            break;
+        }
+        case 'DDU':{
+            if (priceType == 'buyer') {
+                price = 0;
+            }else{
+                for (var i = 1; i < 6; i++) {
+                    price += getStagefee(needPlan['stage' + i + 'Plan'], currency);
+                }
+            }
+            break;
+        }
+        case 'DDP': {
+            if (priceType == 'buyer') {
+                price = 0;
+            } else {
+                for (var i = 1; i < 6; i++) {
+                    price += getStagefee(needPlan['stage' + i + 'Plan'], currency);
+                }
+                var total_tariff = 0;
+                var total_VAT = 0;
+                // !DDP还要加上123段费用作为关税增值税的计算基数
+                var other_price = getStagefee(needPlan.stage1Plan, currency) + getStagefee(needPlan.stage2Plan, currency) + getStagefee(needPlan.stage3Plan, currency);
+                for (var j = 0; j < formData['DDP'].length; j++) {
+                    total_tariff += (formData['DDP'][j].totalPrice - 0 + (other_price - 0)) * (formData['DDP'][j].tariff - 0) / 100;
+                    total_VAT += (formData['DDP'][j].totalPrice - 0 + (other_price - 0) + total_tariff) * (formData['DDP'][j].VAT - 0) / 100;
+                }
+                price = Math.ceil(price) + '+' + currency + numbertoFixed(total_tariff) + '+' + currency + numbertoFixed(total_VAT);
+            }
+            break;
+        }
+    }
+    return price;
+}
+
+function getStagefee(stagePlan, currency) {
+    var price = 0;
+    if (!stagePlan) return price;
+    if (currency == 'CNY') {
+        price = stagePlan.sameCurrencySummary.value;
+    } else {
+        price = stagePlan.optionalPriceSummary[currency].value;
+    }
+    return price;
+}
+
+// ! 相同费用名目的具体杂费获取（数组）
+function getPlanNameFeeChildren(stagePlan, planName, currency) {
+    if (!stagePlan) {
+        return [];
+    }
+    var planNameFeeChildren = [];
+    var processorResult = [];
+    if (currency == 'CNY' || JSON.stringify(stagePlan.optionalPriceSummary) == "{}") {
+        processorResult = stagePlan.priceSummary.processorResult;
+    } else {
+        processorResult = stagePlan.optionalPriceSummary[currency].processorResult;
+
+    }
+    for (var i = 0; i < processorResult.length; i++) {
+        if (processorResult[i].name == planName && processorResult[i].value != 0) {
+            planNameFeeChildren.push(processorResult[i]);
+        }
+    }
+    return planNameFeeChildren;
+}
+
+// ! 海陆空起运港、目的港和干线运输费用计算
+function getStartEndPrice(needPlan, currency, stage, truckPlan) {
+    truckPlan = truckPlan || null;
+    var startEndPrice = 0;
+    if (!needPlan) {
+        return startEndPrice;
+    }
+    switch (stage) {
+        case 'start': {
+            if (currency == 'CNY' || JSON.stringify(needPlan.stage3Plan.optionalPriceSummary) == '{}') {
+                if (truckPlan && truckPlan.one) {
+                    startEndPrice = truckPlan.one.priceSummary.currency + Math.ceil(truckPlan.one.priceSummary.value + needPlan.stage2Plan.priceSummary.value);
+                } else {
+                    startEndPrice = needPlan.stage1Plan.priceSummary.currency + Math.ceil(needPlan.stage1Plan.priceSummary.value + needPlan.stage2Plan.priceSummary.value);
+                }
+            } else {
+                if (truckPlan && truckPlan.one) {
+                    startEndPrice = truckPlan.one.optionalPriceSummary[currency].currency + Math.ceil(truckPlan.one.optionalPriceSummary[currency].value + needPlan.stage2Plan.optionalPriceSummary[currency].value);
+                } else {
+                    startEndPrice = needPlan.stage1Plan.optionalPriceSummary[currency].currency + Math.ceil(needPlan.stage1Plan.optionalPriceSummary[currency].value + needPlan.stage2Plan.optionalPriceSummary[currency].value);
+                }
+            }
+            break;
+        }
+        case 'port': {
+            if (currency == 'CNY' || JSON.stringify(needPlan.stage3Plan.optionalPriceSummary) == '{}') {
+                startEndPrice = needPlan.stage3Plan.priceSummary.currency + Math.ceil(needPlan.stage3Plan.priceSummary.value);
+            } else {
+                startEndPrice = needPlan.stage3Plan.optionalPriceSummary[currency].currency + Math.ceil(needPlan.stage3Plan.optionalPriceSummary[currency].value);
+            }
+            break;
+        }
+        case 'end': {
+            if (currency == 'CNY' || JSON.stringify(needPlan.stage4Plan.optionalPriceSummary) == '{}') {
+                if (truckPlan && truckPlan.five) {
+                    startEndPrice = needPlan.stage4Plan.priceSummary.currency + Math.floor(needPlan.stage4Plan.priceSummary.value + truckPlan.five.priceSummary.value);
+                } else {
+                    startEndPrice = needPlan.stage4Plan.priceSummary.currency + Math.floor(needPlan.stage4Plan.priceSummary.value + needPlan.stage5Plan.priceSummary.value);
+                }
+            } else {
+                if (truckPlan && truckPlan.five) {
+                    startEndPrice = needPlan.stage4Plan.optionalPriceSummary[currency].currency + Math.floor(needPlan.stage4Plan.optionalPriceSummary[currency].value + truckPlan.five.optionalPriceSummary[currency].value);
+                } else {
+                    startEndPrice = needPlan.stage4Plan.optionalPriceSummary[currency].currency + Math.floor(needPlan.stage4Plan.optionalPriceSummary[currency].value + needPlan.stage5Plan.optionalPriceSummary[currency].value);
+                }
+            }
+            break;
+        }
+    }
+    return startEndPrice;
+}
+
+// ! 方案价格比较计算
+function getComparePrice(needPlan, optionPlan, currency) {
+    var comparePrice = 0;
+    if (currency == 'CNY') {
+        comparePrice = needPlan.priceValueDisplay - optionPlan.priceValueDisplay;
+    } else {
+        // ! 此时需要自己计算两个比较方案的总金额
+        // comparePrice = optionPlan.optionalPriceSummary[currency].value - needPlan.optionalPriceSummary[currency].value;
+        var optionPlanPrice = getPriceValueDisplay(currency, optionPlan);
+        var needPlanPrice = getPriceValueDisplay(currency, needPlan);
+        comparePrice = needPlanPrice - optionPlanPrice;
+    }
+    if (comparePrice < -1000 || comparePrice > 1000) {
+        comparePrice = Math.floor(comparePrice);
+    } else {
+        comparePrice = numbertoFixed(comparePrice);
+    }
+    return comparePrice;
+}
+
+// ! 国际快递价格计算
+function getExpressFee(needPlan, currency) {
+    var expressFee = 0;
+    if (currency == 'CNY' || JSON.stringify(needPlan.plan.optionalPriceSummary) == "{}") {
+        expressFee = needPlan.plan.priceSummary.currency + numbertoFixed(needPlan.plan.priceSummary.value);
+    } else {
+        expressFee = needPlan.plan.optionalPriceSummary[currency].currency + numbertoFixed(needPlan.plan.optionalPriceSummary[currency].value);
+    }
+    return expressFee;
+}
+
+// ! 海陆空1/5、2/4段具体项目费用计算
+function getPlanNameFee(stagePlan, planName, currency) {
+    var processorResult = [];
+    if (currency == 'CNY' || JSON.stringify(stagePlan.optionalPriceSummary) == "{}") {
+        processorResult = stagePlan.priceSummary.processorResult;
+    } else {
+        processorResult = stagePlan.optionalPriceSummary[currency].processorResult;
+
+    }
+    var planNameFee = 0;
+    var otherCurrencyPrice = [];
+    for (var i = 0; i < processorResult.length; i++) {
+        if (processorResult[i].name == planName) {
+            if (processorResult[i].currency == currency) {
+                planNameFee += processorResult[i].value;
+            } else {
+                var index = -1;
+                for (var m = 0; m < otherCurrencyPrice.length; m++) {
+                    if (otherCurrencyPrice[m].currency == processorResult[i].currency) {
+                        index = m;
+                    }
+                }
+                if (index != -1) {
+                    otherCurrencyPrice[index].value += processorResult[i].value;
+                } else {
+                    otherCurrencyPrice.push({
+                        value: processorResult[i].value,
+                        currency: processorResult[i].currency,
+                    });
+                }
+
+            }
+        }
+    }
+    if (planNameFee == 0) {
+        var allZero = true;
+        for (var j = 0; j < otherCurrencyPrice.length; j++) {
+            if (otherCurrencyPrice[j].value != 0) {
+                allZero = false;
+            }
+        }
+        if (allZero) {
+            return '';
+        }
+    }
+    if (otherCurrencyPrice.length > 0) {
+        var otherCurrencyPriceStr = '';
+        for (var j = 0; j < otherCurrencyPrice.length; j++) {
+            if (j > 0) {
+                otherCurrencyPriceStr += '+';
+            }
+            otherCurrencyPriceStr += otherCurrencyPrice[j].currency + numbertoFixed(otherCurrencyPrice[j].value);
+        }
+        // ! 当前币种金额为0而存在其他币种的金额时，只显示其他币种金额
+        if (planNameFee == 0 && otherCurrencyPrice.length > 0) {
+            return otherCurrencyPriceStr;
+        }
+        // ! 当前币种和其他币种金额同时存在
+        return currency + numbertoFixed(planNameFee) + '+' + otherCurrencyPriceStr;
+    }
+    // ! 只有当前币种金额
+    return currency + numbertoFixed(planNameFee);
+
+}
+// ! 海陆空3段价格费用计算
+function getStage3PlanFee(needPlan, currency) {
+    var stage3PlanFee = 0;
+    if (currency == 'CNY') {
+        stage3PlanFee = needPlan.stage3Plan.priceSummary.currency + numbertoFixed(needPlan.stage3Plan.priceSummary.value);
+    } else {
+        stage3PlanFee = needPlan.stage3Plan.optionalPriceSummary[currency].currency + numbertoFixed(needPlan.stage3Plan.optionalPriceSummary[currency].value);
+    }
+    return stage3PlanFee;
+}
+
+// ! 通过币种计算总金额
+function getPriceValueDisplay(currency, needPlan, showCurrency, truckPlan, queryType, sameValue) {
+    showCurrency = showCurrency || false;
+    truckPlan = truckPlan || null;
+    queryType = queryType || 'All';
+    sameValue = sameValue || false;
+    var priceValueDisplay = 0;
+    var totalCurrency = 'CNY';
+    if (!needPlan) {
+        return 0;
+    }
+    if (queryType == 'All' || needPlan.transportType == 'Express') {
+        if (currency == 'CNY') {
+            priceValueDisplay = needPlan.priceValueDisplay;
+        } else {
+            if (needPlan.transportType != 'Express') {
+                for (var i = 1; i < 6; i++) {
+                    priceValueDisplay += needPlan['stage' + i + 'Plan'].optionalPriceSummary[currency].value;
+                }
+            } else {
+                if (JSON.stringify(needPlan.plan.optionalPriceSummary) != "{}") {
+                    priceValueDisplay = needPlan.plan.optionalPriceSummary[currency].value;
+                    totalCurrency = needPlan.plan.optionalPriceSummary[currency].currency;
+                } else {
+                    priceValueDisplay = needPlan.priceValueDisplay;
+                }
+            }
+        }
+    } else {
+        console.log('-------------港到港费用总价计算');
+        if (currency != 'CNY') {
+            if (JSON.stringify(needPlan.stage3Plan.optionalPriceSummary) != '{}') {
+                priceValueDisplay += needPlan.stage3Plan.optionalPriceSummary[currency].value;
+                if (truckPlan && truckPlan.one) {
+                    priceValueDisplay += truckPlan.one.optionalPriceSummary[currency].value + needPlan.stage2Plan.optionalPriceSummary[currency].value;
+                }
+                if (truckPlan && truckPlan.five) {
+                    priceValueDisplay += truckPlan.five.optionalPriceSummary[currency].value + needPlan.stage4Plan.optionalPriceSummary[currency].value;
+                }
+                totalCurrency = needPlan.stage3Plan.optionalPriceSummary[currency].currency;
+            }
+        } else {
+            if (sameValue) {
+                priceValueDisplay += needPlan.stage3Plan.sameCurrencySummary.value;
+                if (truckPlan && truckPlan.one) {
+                    priceValueDisplay += truckPlan.one.sameCurrencySummary.value + needPlan.stage2Plan.sameCurrencySummary.value;
+                }
+                if (truckPlan && truckPlan.five) {
+                    priceValueDisplay += truckPlan.five.sameCurrencySummary.value + needPlan.stage4Plan.sameCurrencySummary.value;
+                }
+                totalCurrency = needPlan.stage3Plan.sameCurrencySummary.currency;
+            } else {
+                if (JSON.stringify(needPlan.stage3Plan.priceSummary) != '{}') {
+                    priceValueDisplay += needPlan.stage3Plan.priceSummary.value;
+                    if (truckPlan && truckPlan.one) {
+                        priceValueDisplay += truckPlan.one.priceSummary.value + needPlan.stage2Plan.priceSummary.value;
+                    }
+                    if (truckPlan && truckPlan.five) {
+                        priceValueDisplay += truckPlan.five.priceSummary.value + needPlan.stage4Plan.priceSummary.value;
+                    }
+                    totalCurrency = needPlan.stage3Plan.priceSummary.currency;
+                }
+            }
+        }
+    }
+    if (showCurrency) {
+        return totalCurrency + Math.ceil(priceValueDisplay);
+    } else {
+        return Math.ceil(priceValueDisplay);
+    }
+}
+
+// etd 格式修改
+function changeetd(etd) {
+    var arr = etd.split('/')
+    if (arr.length == 7) {
+        return '每天'
+    }
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == 1) {
+            arr[i] = '周一'
+        } else if (arr[i] == 2) {
+            arr[i] = '周二'
+        } else if (arr[i] == 3) {
+            arr[i] = '周三'
+        } else if (arr[i] == 4) {
+            arr[i] = '周四'
+        } else if (arr[i] == 5) {
+            arr[i] = '周五'
+        } else if (arr[i] == 6) {
+            arr[i] = '周六'
+        } else {
+            arr[i] = '周日'
+        }
+    }
+    str = arr.join(', ')
+    return str
+}
+// etd 格式修改
+function changeetdEn(etd) {
+    var arr = etd.split('/')
+    if (arr.length == 7) {
+        return 'every day'
+    }
+    for (var i = 0; i < arr.length; i++) {
+        if (arr[i] == 1) {
+            arr[i] = 'Mon'
+        } else if (arr[i] == 2) {
+            arr[i] = 'Tue'
+        } else if (arr[i] == 3) {
+            arr[i] = 'Wed'
+        } else if (arr[i] == 4) {
+            arr[i] = 'Thu'
+        } else if (arr[i] == 5) {
+            arr[i] = 'Fri'
+        } else if (arr[i] == 6) {
+            arr[i] = 'Sat'
+        } else {
+            arr[i] = 'Sun'
+        }
+    }
+    str = arr.join(', ')
+    return str
+}
+
+// 数字截断
+function numbertoFixed(number) {
+    return parseFloat(Math.floor(number * 100) / 100)
+}
+
+function sub(k) {
+    //! 截取字符串 完整价格的截取 只保留小数点后2位
+    let a = k;
+    let w = a.indexOf(".");
+    if (w != -1) {
+        let c = a.substr(0, w + 3);
+        return c;
+    } else {
+        return k;
+    }
+}
+
+// 取绝对值
+function getAbs(num) {
+    return Math.abs(num);
+}
+
+function MathFloor(k) {
+    //! 截取字符串 完整价格的截取 只保留小数点后2位
+    let a = Number(k)
+    let b = Math.floor(a * 100) / 100
+    return b
+}
+
+// 运输时间的整理
+function transtime(item) {
+    if (item.stage3TransitTime != '') {
+        return item.stage3TransitTime
+    } else {
+        if (item.transshipment == 'DIR' && item.transportType == 'Air') {
+            return 4
+        } else if (item.transshipment != 'DIR' && item.transportType == 'Air') {
+            let b = item.transshipment.split('/')
+            return b.length
+        }
+    }
+}
+
+// 货币符号的转换
+function changemoney(currency) {
+    if (currency == 'CNY') {
+        return ' ¥'
+    } else if (currency == 'USD') {
+        return ' $'
+    } else if (currency == 'EUR') {
+        return ' €'
+    } else {
+        return ''
+    }
+}
+
+
+// 计算费用
+
+function displayPriceMapForFeeCategory(processorResult, name) {
+    var priceMap = {}
+
+    for (var i = 0; i < processorResult.length; i++) {
+        var tmp = processorResult[i]
+
+        if (tmp.name !== name) {
+            continue
+        }
+
+        var value = priceMap[tmp.currency]
+
+        if (value == null) {
+            value = 0
+        } // console.log('tmpvalue: ',tmp.value)
+
+        value += Math.floor(tmp.value * 100) / 100
+
+        if (value != 0) {
+            priceMap[tmp.currency] = value
+        }
+    }
+
+    return priceMap
+}
+
+function priceMapToString(priceMap) {
+    var keys = Object.keys(priceMap)
+    var str = []
+
+    for (var i = 0; i < keys.length; i++) {
+        str.push('' + keys[i] + Math.floor(priceMap[keys[i]] * 100) / 100 + '')
+    }
+
+    return str.join(' + ')
+}
+
+function setState2and4Allfunc(processorResult, planName) {
+    var obj = {
+        name: planName,
+        value: priceMapToString(
+            displayPriceMapForFeeCategory(processorResult, planName)
+        ),
+        children: [],
+    }
+    processorResult.map(function (item) {
+        var setChildren = {
+            name: '',
+            value: '',
+        }
+
+        if (item.name == planName) {
+            setChildren.name = item.detailName // console.log(item.detailName ,item.value)
+
+            if (item.value != 0) {
+                setChildren.value = item.currency + Math.floor(item.value * 100) / 100
+                obj.children.push(setChildren)
+            }
+        }
+    })
+    return obj
+}
+
+function setState3func(processorResult, planName) {
+    var obj = {
+        name: planName,
+        value: priceMapToString(
+            displayPriceMapForFeeCategory(processorResult, planName)
+        ),
+    }
+    return obj
+}
+
+// 保存小数点后两位
+function parseFloat(number) {
+    number = number * 100 + ''
+    var arr = number.split('.')
+    var result = arr[0] / 100
+    return result
+}
+
+// 时间格式化
+
+function formatNumber(n) {
+    n = n.toString()
+    return n[1] ? n : '0' + n
+}
+
+function formatTime(date) {
+    var date = getDate(date)
+    var year = date.getFullYear()
+    var month = date.getMonth() + 1
+    var day = date.getDate()
+    var hour = date.getHours()
+    var minute = date.getMinutes()
+    var second = date.getSeconds()
+    return [year, month, day].map(formatNumber).join('/')
+    // return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':');
+}
+
+// 最大重量
+function totalWeight(boxes) {
+    var weight = 0;
+    for (var i = 0; i < boxes.length; i++) {
+        weight += boxes[i].boxDataEntry.maxWeight * boxes[i].number
+    }
+    return weight
+}
+// 最大体积
+function totalVolume(boxes) {
+    var volume = 0
+    for (var i = 0; i < boxes.length; i++) {
+        volume += boxes[i].boxDataEntry.volume * boxes[i].number
+    }
+    return volume
+}
+
+// 物品总重量
+function sumWeight(arr) {
+    var s = 0;
+    for (var i = arr.length - 1; i >= 0; i--) {
+        s += arr[i].weight * arr[i].number;
+    }
+    return s;
+}
+//   物品总体积
+function sumVolume(arr) {
+    var s = 0;
+    for (var i = arr.length - 1; i >= 0; i--) {
+        s += arr[i].volume * arr[i].number;
+    }
+    return s;
+}
+
+
+
+function boxesName(boxes) {
+    var setBoxes = boxes.split("'").join('');
+    if (setBoxes == "20") {
+        return '20尺平柜'
+    } else if (setBoxes == "40") {
+        return '40尺平柜'
+    } else if (setBoxes == "40HQ") {
+        return '40尺高柜'
+    } else {
+        return boxes
+    }
+}
+
+
+function boxesNameEnZh(boxes, language) {
+    var setBoxes = boxes.split("'").join('');
+    if (setBoxes == "20") {
+        if (language == '中文') {
+            return '20尺平柜'
+        } else {
+            return '20GP'
+        }
+    } else if (setBoxes == "40") {
+        if (language == '中文') {
+            return '40尺平柜'
+        } else {
+            return '40GP'
+
+        }
+    } else if (setBoxes == "40HQ") {
+        if (language == '中文') {
+            return '40尺高柜'
+        } else {
+            return '40HQ'
+        }
+    } else {
+        return boxes
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+function priceChangeShow(num) {
+    //!  普通的金额加逗号  纯数字 可以使用
+    num = num.toString().split(".");  // 分隔小数点
+    var arr = num[0].split("").reverse();  // 转换成字符数组并且倒序排列
+    var res = [];
+    for (i = 0, len = arr.length; i < len; i++) {
+        if (i % 3 === 0 && i !== 0) {
+            res.push(",");   // 添加分隔符
+        }
+        res.push(arr[i]);
+    }
+    res.reverse(); // 再次倒序成为正确的顺序
+    if (num[1]) {  // 如果有小数的话添加小数部分
+        res = res.join("").concat("." + num[1]);
+    } else {
+        res = res.join("");
+    }
+    return res;
+}
+
+function priceChangeShow_v2(num) {
+    //!   有多加号的 金额 格式为 cny100 + eur22222 
+    if (!num && num != 0) {
+        return '';
+    }
+    var useArr = [];
+    var numArr = num.toString().split("+");  // 用+分割不同的需要处理的数字字符串
+    for (index = 0; index < numArr.length; index++) {
+        numArr[index] = numArr[index].trim();
+        needNum = numArr[index].toString().split(".");  // 分隔小数点
+        var numberIndex = getNumberIndex(needNum[0]);
+        var currency = needNum[0].substring(0, numberIndex);
+        var needNumber = needNum[0].substring(numberIndex, numArr[index].length).trim();
+        var arr = needNumber.split("").reverse();  // 转换成字符数组并且倒序排列
+        var res = [];
+        for (i = 0, len = arr.length; i < len; i++) {
+            if (i % 3 === 0 && i !== 0) {
+                res.push(",");   // 添加分隔符
+            }
+            res.push(arr[i]);
+        }
+        res.reverse(); // 再次倒序成为正确的顺序
+        if (needNum[1]) {  // 如果有小数的话添加小数部分
+            res = res.join("").concat("." + needNum[1]);
+        } else {
+            res = res.join("");
+        }
+        res = currency + res;
+        useArr.push(res);
+    }
+    // for (i = 0; i < useArr.length; i++) {
+    //     if (useArr[i][1] == ',' && useArr[i][0] != 0 && useArr[i][0] != 1 && useArr[i][0] != 2 && useArr[i][0] != 3 && useArr[i][0] != 4 && useArr[i][0] != 5 && useArr[i][0] != 6 && useArr[i][0] != 7 && useArr[i][0] != 8 && useArr[i][0] != 9) {
+    //         var currency = useArr[i].substring(0, 1)
+    //         var price = useArr[i].substring(2, useArr[i].length)
+    //         useArr[i] = currency + price
+    //     }
+    // }
+    return useArr.join('+')
+}
+
+
+function priceChangeShowHaveCurrency(num) {
+    //! 多了一次判断 如果是1个金额  则可用  如果是金额累加的  则不用
+    var numArr = num.split('+')
+    if (numArr.length == 1) {
+        // ! 获取纯数字的index
+        var numberIndex = getNumberIndex(num);
+        var currency = num.substring(0, numberIndex);
+        num = num.substring(numberIndex, num.length);
+
+        num = num.toString().split(".");  // 分隔小数点
+        var arr = num[0].split("").reverse();  // 转换成字符数组并且倒序排列
+        var res = [];
+        for (i = 0, len = arr.length; i < len; i++) {
+            if (i % 3 === 0 && i !== 0) {
+                res.push(",");   // 添加分隔符
+            }
+            res.push(arr[i]);
+        }
+        res.reverse(); // 再次倒序成为正确的顺序
+        if (num[1]) {  // 如果有小数的话添加小数部分
+            res = res.join("").concat("." + num[1]);
+        } else {
+            res = res.join("");
+        }
+        return currency + res;
+    } else {
+        return num
+    }
+
+}
+// ! 获取纯数字的下标
+function getNumberIndex(num) {
+    var index = 0;
+    for (var i = 0; i < num.length; i++) {
+        var number = num.substring(i, num.length);
+        if (number == 0 || number - 0) {
+            index = i;
+            if (number[0] == '+' || number[0] == '-') {
+                index++;
+            }
+            break;
+        }
+    }
+    return index;
+}
+
+function priceChangeShowCompareHaveCurrency(num) {
+    //! 格式是  +¥100 或者-¥100
+    var currency = num.substring(0, 2);
+    num = num.substring(2, num.length)
+    num = num.toString().split(".");  // 分隔小数点
+    var arr = num[0].split("").reverse();  // 转换成字符数组并且倒序排列
+    var res = [];
+    for (i = 0, len = arr.length; i < len; i++) {
+        if (i % 3 === 0 && i !== 0) {
+            res.push(",");   // 添加分隔符
+        }
+        res.push(arr[i]);
+    }
+    res.reverse(); // 再次倒序成为正确的顺序
+    if (num[0] <= 1000 && num[1]) {  // 如果有小数的话添加小数部分
+        res = res.join("").concat("." + num[1]);
+    } else {
+        res = res.join("");
+    }
+    return currency + res;
+}
+
+
+
+
+module.exports = {
+    changeetd: changeetd,
+    changeetdEn: changeetdEn,
+    fixed: numbertoFixed,
+    transtime: transtime,
+    changemoney: changemoney,
+    setState2and4Allfunc: setState2and4Allfunc,
+    setState3func: setState3func,
+    parseFloat: parseFloat,
+    formatTime: formatTime,
+    totalWeight: totalWeight,
+    totalVolume: totalVolume,
+    sumWeight: sumWeight,
+    sumVolume: sumVolume,
+    sub: sub,
+    mathfloor: MathFloor,
+    boxesName: boxesName,
+    boxesNameEnZh: boxesNameEnZh,
+    priceChangeShow: priceChangeShow,
+    priceChangeShowCompareHaveCurrency: priceChangeShowCompareHaveCurrency,
+    priceChangeShowHaveCurrency: priceChangeShowHaveCurrency,
+    priceChangeShow_v2: priceChangeShow_v2,
+    getPriceValueDisplay: getPriceValueDisplay,
+    getPlanNameFee: getPlanNameFee,
+    getStage3PlanFee: getStage3PlanFee,
+    getExpressFee: getExpressFee,
+    getComparePrice: getComparePrice,
+    getAbs: getAbs,
+    getStartEndPrice: getStartEndPrice,
+    getPlanNameFeeChildren: getPlanNameFeeChildren,
+    getBuyerOrSellerPrice: getBuyerOrSellerPrice,
+    getTotalPrice: getTotalPrice,
+    getOrderPrice: getOrderPrice,
+    setAddressStr: setAddressStr
+}

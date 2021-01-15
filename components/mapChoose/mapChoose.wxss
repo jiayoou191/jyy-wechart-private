@@ -1,0 +1,21 @@
+/* components/mapChoose/mapChoose.wxss */
+.map_choose_card{
+    width:686rpx;
+    /* height:260rpx; */
+    background:rgba(255,255,255,1);
+    box-shadow:0rpx 4rpx 24rpx 0rpx rgba(8,15,30,0.25);
+    border-radius:0rpx 0rpx 24rpx 24rpx;
+}
+
+.map_choose_bottom {
+    border-radius:0rpx 0rpx 24rpx 24rpx; 
+    font-size: 6rpx;
+}
+
+.cell_icon {
+   margin-right: 5px;
+   /* width:200rpx; */
+    /* height:64rpx; */
+    /* background:rgba(238,238,238,1); */
+    /* border-radius:32rpx; */
+    }

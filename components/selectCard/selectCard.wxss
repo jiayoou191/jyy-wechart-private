@@ -1,0 +1,342 @@
+.card_top {
+  padding-top: 20rpx;
+}
+
+.card_size {
+  font-size: 30rpx;
+}
+
+.flex {
+  display: flex;
+}
+
+.margin_left_8 {
+  margin-left: 16rpx;
+}
+
+.card_border {
+  /* margin-left: 20rpx;
+  margin-right: 20rpx;
+  margin-bottom: 20rpx;
+  border-radius: 20rpx;
+  height: 250rpx; */
+  margin: 0 auto;
+  margin-top: 16rpx;
+  margin-bottom: 16rpx;
+  background: #fff;
+  margin-left: 32rpx;
+  margin-right: 32rpx;
+  /* width:686rpx; */
+  background: rgba(255, 255, 255, 1);
+  border-radius: 16rpx;
+}
+
+/* .card_border:active{
+  background:rgba(242,242,244,1);
+} */
+.card_border_active {
+  background: rgba(242, 242, 244, 1);
+}
+
+.card_title {
+  height: 72rpx;
+  /* padding:6rpx 12rpx 6rpx 12rpx; */
+  border-bottom: 2rpx solid #DDDDDD;
+  margin-bottom: 32rpx;
+  position: relative;
+}
+
+.feature {
+  height: 100%;
+}
+
+.card_transportType {
+  /* width: 112rpx; */
+  height: 32rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: rgba(67, 67, 67, 1);
+  line-height: 37rpx;
+  margin-top: 20rpx;
+  margin-left: 20rpx;
+  margin-right: 16rpx;
+  float: left;
+}
+
+.card_card {
+  font-size: 20rpx;
+  margin-top: 22rpx;
+  float: left;
+  min-width: 76rpx;
+  height: 32rpx;
+  background: rgba(44, 183, 72, 1);
+  text-align: center;
+  border-radius: 16rpx 200rpx 200rpx 0rpx;
+  font-size: 20rpx;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  line-height: 32rpx;
+  padding-right: 16rpx;
+  padding-left: 16rpx;
+}
+
+
+.card_card_fastest {
+  font-size: 20rpx;
+  margin-top: 22rpx;
+  float: left;
+  min-width: 76rpx;
+  height: 32rpx;
+  background: rgba(0, 197, 185, 1);
+  text-align: center;
+  border-radius: 16rpx 200rpx 200rpx 0rpx;
+  font-size: 20rpx;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  line-height: 32rpx;
+  padding-right: 16rpx;
+  padding-left: 16rpx;
+}
+
+.card_card_shenxin {
+  font-size: 20rpx;
+  margin-top: 22rpx;
+  float: left;
+  min-width: 76rpx;
+  height: 32rpx;
+  background: #DC3E38;
+  text-align: center;
+  border-radius: 16rpx 200rpx 200rpx 0rpx;
+  font-size: 20rpx;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 1);
+  line-height: 32rpx;
+  padding-right: 16rpx;
+  padding-left: 16rpx;
+}
+
+.card_price {
+  position: absolute;
+  top: 20rpx;
+  right: 20rpx;
+  /* margin-top: 20rpx; */
+  /* margin-right: 20rpx; */
+  height: 42rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: rgba(220, 62, 56, 1);
+  line-height: 42rpx;
+  float: right;
+  font-family: ALIBABA Font Bold;
+}
+
+.card_from_to {
+  margin-bottom: 32rpx;
+}
+
+.card_address_from_to {
+  display: flex;
+  position: relative;
+  /* line-height: 40rpx; */
+  /* height: 40rpx; */
+  /* justify-content: space-between;  */
+}
+
+.card_from {
+  margin-left: 16rpx;
+  max-width: 252rpx;
+  float: left;
+  height: 32rpx;
+  /* margin: 0 auto; */
+
+}
+
+.card_to {
+  /* margin-right: 16rpx; */
+  /* max-width: 252rpx; */
+  /* width: 242rpx; */
+  /* text-align: right; */
+  float: right;
+  position: absolute;
+  right: 45rpx;
+  height: 32rpx;
+  top: -2rpx;
+  /* margin: 0 auto; */
+  /* margin: 0 10rpx; */
+  /* text-align: right; */
+}
+
+.card_time {
+  position: relative;
+  text-align: center;
+  line-height: 18rpx;
+  display: table;
+  float: left;
+}
+
+.card_image {
+  width: 30rpx;
+  height: 30rpx;
+}
+
+.card_time_wrapper {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.card_time_word {
+  font-size: 22rpx;
+  text-align: center;
+  padding-right: 8rpx;
+  line-height: 22rpx;
+
+
+  /* top: -10rpx; */
+}
+
+.card_image_line {
+
+  width: 140rpx;
+  max-width: 180rpx;
+  height: 10rpx;
+  padding-bottom: 10rpx;
+  /* padding-top: 10rpx; */
+  /* position: absolute; */
+  /* top: 38rpx; */
+  /* right: -148rpx; */
+  /* left: -148rpx; */
+  /* top: 10rpx; */
+}
+
+.card_address_word_from {
+  /* width:111px;
+height:15px;
+font-size:13px;
+font-family:PingFangSC-Medium,PingFang SC;
+font-weight:500;
+color:rgba(67,67,67,1);
+line-height:15px; */
+  display: inline-block;
+  /* vertical-align: bottom; */
+  max-width: 222rpx;
+  height: 32rpx;
+  margin-left: 4rpx;
+  /* line-height: 30rpx; */
+  width: 218rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  color: rgba(67, 67, 67, 1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card_address_word_to {
+  /* width:111px;
+height:15px;
+font-size:13px;
+font-family:PingFangSC-Medium,PingFang SC;
+font-weight:500;
+color:rgba(67,67,67,1);
+line-height:15px; */
+  display: inline-block;
+  /* vertical-align: top; */
+  max-width: 200rpx;
+  height: 37rpx;
+  /* line-height: 30rpx; */
+  margin-left: 4rpx;
+  /* width:222rpx; */
+  font-size: 26rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+  vertical-align: top;
+}
+
+.card_to .card_image {
+  display: inline-block;
+  text-align: right;
+  margin-right: 3rpx;
+}
+
+
+.card_plan {
+  /* width:654rpx; */
+  height: 80rpx;
+  /* margin: 0 auto; */
+  margin: 0 16rpx 0 16rpx;
+  padding: 0 24rpx 0 24rpx;
+  font-size: 26rpx;
+  font-weight: 400;
+  color: rgba(67, 67, 67, 1);
+  line-height: 80rpx;
+  background: rgba(246, 246, 246, 1);
+  border-radius: 8rpx;
+  display: flex;
+  /* position: relative; */
+  justify-content: space-between;
+  /* padding: 0 20rpx 0 30rpx; */
+}
+
+.card_plan_image_line_from {
+
+
+  width: 146rpx;
+  height: 2rpx;
+  background: #aaa;
+  margin-top: 38rpx;
+}
+
+.card_plan_transportType {
+  width: 165rpx;
+  max-width: 165rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  text-align: center;
+}
+
+.card_plan_image_line_to {
+  /* right: 84rpx; */
+  /* top: 20rpx; */
+  /* position: absolute; */
+  width: 170rpx;
+  height: 5rpx;
+  margin-top: 20rpx;
+
+}
+
+.card_etd {
+  /* width:146px; */
+  height: 28rpx;
+  font-size: 20rpx;
+  /* font-family:PingFangSC-Regular,PingFang SC; */
+  font-weight: 400;
+  color: rgba(153, 153, 153, 1);
+  line-height: 14px;
+  margin-left: 20rpx;
+  margin-top: 20rpx;
+  padding-bottom: 20rpx;
+
+}
+
+.mar_right {
+  margin-right: 16rpx;
+}
+
+.mosaic {
+  width: 72rpx;
+  height: 22rpx;
+}
+
+.mosaicLoginFalse {
+  width: 32rpx;
+  height: 22rpx;
+}
+
+.over {
+  overflow: hidden;
+  zoom: 1;
+}

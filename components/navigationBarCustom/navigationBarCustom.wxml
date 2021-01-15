@@ -1,0 +1,16 @@
+<view class="navigationBarCustom" style="height:{{totalBar*2}}rpx">
+  <view class="toolBar" style="height:{{toolBarHeight*2}}rpx"></view>
+  <view class="navBar" style="height:{{navBarHeight*2}}rpx">
+    <image bindtap="jumpUser"  class="userPhoto" src="{{userPhoto}}" mode="widthFix" />
+    <view bindtap="handleLanguageChange" bind:touchStart='handleTouchstart' hover-class="lang_active" class="lang flex">
+      <!-- <image  class="language_photo" src="../../pages/image/icon/icon-language.png"  /> -->
+      <!-- <image  class="language_photo" src="../../pages/image/icon/language.svg"  /> -->
+      <image  class="language_photo" src="{{languagePic}}"  />
+
+      <view  class="language_word" >{{language['languageName']}}</view>
+    </view>
+
+  </view>
+
+</view>
+

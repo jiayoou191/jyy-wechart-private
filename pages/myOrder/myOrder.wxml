@@ -1,0 +1,68 @@
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<van-notify id="van-notify" />
+<van-toast id="van-toast" />
+<view class="myOrder">
+    <van-tabs line-width="14" active="{{code}}" line-height="2" bind:change="changeBar" sticky animated swipeable>
+        <van-tab wx:for="{{tabs}}" wx:for-item="tab" wx:for-index="tabIndex" wx:key="tabIndex" tab-class="tabs" title="{{language[tab]}}" name="{{tab}}">
+            <scroll-view scroll-y bindscrolltolower="scrollToLower" bindscroll="scroll" bind:touchstart="touchStart" bind:touchmove="touchMove" bind:touchend="touchEnd" style="height:{{containerHeight}}rpx;overflow-y:auto;">
+                <view class="container {{refresh[tab].refresh?'refresh':''}}">
+                    <view wx:if="{{refresh[tab].topLoading&&!refresh[tab].topLoadingSuccess}}" class="loading margin_bottom_8">
+                        <van-loading type="spinner" />
+                    </view>
+                    <view wx:if="{{refresh[tab].topLoadingSuccess}}" class="loading margin_bottom_8">
+                        <van-icon size="32px" color="lightgreen" name="checked" />
+                    </view>
+                    <view wx:for="{{orders[tab]}}" wx:for-item="page" wx:for-index="pageNumber" wx:key="pageNumber">
+                        <card wx:for="{{page}}" wx:key="index" cardClickable data-page-number="{{pageNumber}}" data-index="{{index}}" bindtap="orderDetail" title="{{languageBase[item.transportType]}}" icon="{{item.iconUrl}}" rightTitle="{{languageBase[item.physicsStatus]}}" rightTitleColor="rgba(153,153,153,1)" minHeight="300">
+                            <view class="order_info">
+                                <view class="flex align_items_center margin_bottom_8">
+                                    <view class="circular circular_green"></view>
+                                    <view wx:if="{{item.transportType != 'Express'}}" class="ellipsis">
+                                        {{languageCountry[item.plan.col]}}·{{languageFlag=='中文'?item.plan.polNameZh:item.plan.polNameEn}}
+                                    </view>
+                                    <view wx:else class="ellipsis">
+                                        {{languageCountry[item.expressPlan.col]}}
+                                    </view>
+                                </view>
+                                <view class="flex align_items_center margin_bottom_8">
+                                    <view class="circular circular_red"></view>
+                                    <view wx:if="{{item.transportType != 'Express'}}" class="ellipsis">
+                                        {{languageCountry[item.plan.cod]}}·{{languageFlag=='中文'?item.plan.podNameZh:item.plan.podNameEn}}
+                                    </view>
+                                    <view wx:else class="ellipsis">
+                                        {{languageCountry[item.expressPlan.cod]}}
+                                    </view>
+                                </view>
+                                <view class="goods_info flex">
+                                    <view class="goods_icon_parent">
+                                        <image class="goods_icon" src="../image/icon/icon-goods.png" />
+                                    </view>
+                                    <view class="flex" wx:if="{{item.query.itemType.id!='200602151639hY0VBhhU'}}">
+                                       <view class="goods_max">{{item.query.items[0].name}}</view>·<view>{{item.query.items[0].weight}}kg {{language.more}}{{item.query.items.length}}{{language.goodsNum}}</view>
+                                    </view>
+                                    <view wx:else>
+                                        {{languageBase[item.query.items[0].name]}}·{{item.query.items[0].weight-0.5}}-{{item.query.items[0].weight}}kg
+                                    </view>
+                                </view>
+                                <view class="price">
+                                <!-- {{item.plan!=null?item.plan.currency:item.expressPlan.currency}} {{common.priceChangeShow_v2(item.priceValueText)}} -->
+                                {{language[item.orderMeta.orderUserRole]}}
+                                {{common.priceChangeShow_v2(common.getOrderPrice(item,'CNY',item.orderMeta.orderUserRole))}}
+                                </view>
+                            </view>
+                        </card>
+                    </view>
+                    <view wx:if="{{loading[tab]}}" class="loading">
+                        <van-loading type="spinner" />
+                    </view>
+                    <view wx:if="{{!loading[tab]&&orders[tab].length==0}}" class="empty">
+                        {{language.empty}}
+                    </view>
+                    <view wx:if="{{!loading[tab]&&next==null&&orders[tab].length>0}}" class="next">
+                        {{language.nextIsNull}}
+                    </view>
+                </view>
+            </scroll-view>
+        </van-tab>
+    </van-tabs>
+</view>

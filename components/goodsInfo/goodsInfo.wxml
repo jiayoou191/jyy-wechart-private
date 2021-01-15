@@ -1,0 +1,10 @@
+<van-popup show="{{ modalShow }}" round position="bottom" custom-style="height: 40%" bind:close="handleClose">
+    <view class="goods_title">{{title}}</view>
+    <view class="goods_show">
+      <view class="goods_show_flex" wx:for="{{dataSource}}" wx:key="index">
+        <view class="ellipsis" >{{item.name}}</view>
+        <view>{{item.weight}}kg</view>
+        <view style="width:260rpx;text-align:right;">{{item.volume}}m³</view>
+      </view>
+    </view>
+</van-popup>

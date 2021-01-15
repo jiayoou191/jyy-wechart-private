@@ -1,0 +1,29 @@
+<!-- components/goods/goods.wxml -->
+<view  class="goods_content over">
+  <view bindtap="handleOpen" class="goods_content_content over">
+  <view class="shop ">
+    <image class="shop_image" src="../../pages/image/icon/icon-goods.png"></image>
+  </view>
+  <view class="goods">
+    <view class="goods_type flex">
+      <view class="margin_right_8">{{typelanguage[items.type]}}</view>
+      <view wx:if='{{query.items.length>1}}'>
+        {{language.more}}{{query.items.length}}{{language.goodsCount}}
+      </view>
+    </view>
+    <!-- <view class="goods_name">{{items.name}} {{items.weight}}kg {{items.volume}}m³</view> -->
+    <view class="goods_name flex">
+      <view class="margin_right_8">{{query.items[0].name=='国际文件'?baselanguage[query.items[0].name]:query.items[0].name}}</view>
+      <view wx:if="{{query.items[0].name =='国际文件'}}">
+        {{query.items[0].weight-0.5}}-{{query.items[0].weight}}kg
+      </view>
+      <view wx:else>{{query.items[0].weight}}kg {{query.items[0].volume}}m³</view>
+    </view>
+  </view>
+  <view class="goods_see" wx:if='{{query.items.length>1}}' >
+    <!-- {{language.view}} -->
+    <van-icon name="arrow" />
+  </view>
+  </view>
+  <goodsInfo modalShow="{{isShow}}" bind:handleClose="handleClose" title="{{language.goodsInfo}}" dataSource="{{query.items}}" />
+</view>

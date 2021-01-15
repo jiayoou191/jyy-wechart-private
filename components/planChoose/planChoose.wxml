@@ -1,0 +1,75 @@
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<view>
+    <van-popup show="{{ isShow }}" round position="bottom" bind:close="handleCancel">
+        <view class="box_choose">
+            <view class="box_choose_name">
+                <view class="morePlan">{{language.morePlan}}</view>
+                <view wx:if="{{NeedPlan.transportType=='RailwayFCL'||NeedPlan.transportType=='RailwayLCL'}}" class="box_choose_title over">
+                    <view class="box_choose_title_banlie">{{language.banLei}}</view>
+                    <view class="box_choose_title_title">{{language.schedule}}</view>
+                    <view class="box_choose_title_title">{{language.voyage}}</view>
+                    <view class="box_choose_title_price">{{language.priceComparison}}</view>
+                </view>
+                <view wx:if="{{NeedPlan.transportType=='ShippingFCL'||NeedPlan.transportType=='ShippingLCL'}}" class="box_choose_title over">
+                    <view class="box_choose_title_banlie">{{language.shippingCompany}}</view>
+                    <view class="box_choose_title_title">{{language.shippingETD}}</view>
+                    <view class="box_choose_title_title">{{language.voyage}}</view>
+                    <view class="box_choose_title_price">{{language.priceComparison}}</view>
+                </view>
+                <view wx:if="{{NeedPlan.transportType=='Air'}}" class="box_choose_title over">
+                    <view class="box_choose_title_banlie">{{language.airCompany}}</view>
+                    <view class="box_choose_title_title">{{language.airETD}}</view>
+                    <view class="box_choose_title_title">{{language.voyage}}</view>
+                    <view class="box_choose_title_price">{{language.priceComparison}}</view>
+                </view>
+                <view wx:if="{{NeedPlan.transportType=='Express'}}" class="box_choose_title over">
+                    <view class="box_choose_title_banlie">{{language.expressCompany}}</view>
+                    <view class="box_choose_title_title">{{language.expressETD}}</view>
+                    <view class="box_choose_title_title">{{language.voyage}}</view>
+                    <view class="box_choose_title_price">{{language.priceComparison}}</view>
+                </view>
+            </view>
+            <!-- <view class="box_choose_ok_cancel"> -->
+                <!-- <text  bindtap='handleCancel' class="box_choose_cancel">取消</text> -->
+                <!-- <text  bindtap='handleOk' class="box_choose_ok">确认</text> -->
+            <!-- </view> -->
+            
+            <view wx:for="{{planChoose}}" wx:key="index">
+                <!-- {{NeedPlan.id}}  {{item.id}} -->
+                <!-- 海陆空的选择方案 -->
+                <view class="{{NeedPlan.id == item.id?'box_choose_content_now_plan':'box_choose_content'}} box_choose_whitch" wx:if="{{item.planCardType!='Express'}}" data-item="{{item}}" data-index="{{index}}" bindtap='handleClick'>
+                    <view class="box_choose_content_banlie">{{item.stage3Plan.carrier}}</view>
+                    <view wx:if="{{languageName == '中文'}}" class="box_choose_content_content">{{common.changeetd(item.etd).length>2?item.etd:common.changeetd(item.etd)}}</view>
+                    <view wx:else class="box_choose_content_content">{{common.changeetd(item.etd).length>2?item.etd:common.changeetdEn(item.etd)}}</view>
+
+                    <!-- <view class="box_choose_content_content">{{common.changeetd(item.etd).length}}</view> -->
+                    <view wx:if="{{NeedPlan.id == item.id}}" class="box_choose_content_price">({{language.nowPlan}})</view>
+                    <view wx:if="{{NeedPlan.id == item.id}}" class="box_choose_content_content"></view>
+                    <view  wx:if="{{NeedPlan.id != item.id}}" class="box_choose_content_content">{{item.compareTransitTime}}{{language.day}}</view>
+                    <view  wx:if="{{NeedPlan.id != item.id}}" class="box_choose_content_price {{common.getComparePrice(item,NeedPlan,currency)>=0?'green':'red'}}">
+                        <!-- {{common.priceChangeShowCompareHaveCurrency(item.comparePrice)}} -->
+                        {{common.getComparePrice(item,NeedPlan,currency)>=0?'+':'-'}}{{currency}}{{common.priceChangeShow_v2(common.getAbs(common.getComparePrice(item,NeedPlan,currency)))}}
+                        </view>
+                    <!-- {{item.planChoose}}:{{item.id}} -->
+                </view>
+                <!-- 快递的选择方案 -->
+                <view class="{{NeedPlan.id == item.id?'box_choose_content_now_plan':'box_choose_content'}} box_choose_whitch" wx:else data-item="{{item}}" data-index="{{index}}" bindtap='handleClick'>
+                    <view class="box_choose_content_banlie">{{item.carrier}}</view>
+                    <view class="box_choose_content_content">{{language.everyDay}}</view>
+                    <view wx:if="{{NeedPlan.id == item.id}}" class="box_choose_content_price">({{language.nowPlan}})</view>
+                    <view wx:if="{{NeedPlan.id == item.id}}" class="box_choose_content_content"></view>
+
+                    <view  wx:if="{{NeedPlan.id != item.id}}" class="box_choose_content_content">{{item.compareTransitTime}}{{language.day}}</view>
+                    <view  wx:if="{{NeedPlan.id != item.id}}" class="box_choose_content_price {{common.getComparePrice(item,NeedPlan,currency)>=0?'green':'red'}}">
+                        <!-- {{common.priceChangeShowCompareHaveCurrency(item.comparePrice)}} -->
+                        {{common.getComparePrice(item,NeedPlan,currency)>=0?'+':'-'}}{{currency}}{{common.priceChangeShow_v2(common.getAbs(common.getComparePrice(item,NeedPlan,currency)))}}
+                    </view>
+
+                    <!-- {{item.planChoose}}:{{item.id}} -->
+                </view>
+            </view>
+            <!-- {{NeedPlan.id}} -->
+        </view>
+        <view class="mar_top"></view>
+    </van-popup>
+</view>

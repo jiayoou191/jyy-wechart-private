@@ -1,0 +1,122 @@
+view {
+    font-size: 26rpx;
+}
+
+.mar_top {
+    /* height: 300rpx; */
+}
+
+.box_choose {
+    /* display: flex;
+    justify-content: space-between;
+    margin-bottom: 74rpx; */
+    max-height: 800rpx;
+    overflow-y: auto;
+    position: relative;
+}
+
+.box_choose_name {
+    position: sticky;
+    top: 0;
+    left: 0;
+    background-color: white;
+    padding-bottom: 8rpx;
+}
+.morePlan{
+    height: 90rpx;
+    line-height: 90rpx;
+    margin-left: 32rpx;
+    font-size: 32rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+}
+
+.box_choose_title {
+    /* float: left; */
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 8rpx;
+}
+
+.box_choose_title_title {
+    /* float: left; */
+    width: 140rpx;
+    text-align: center;
+}
+
+.box_choose_title_price {
+    width: 160rpx;
+    text-align: center;
+}
+
+.box_choose_title_banlie {
+    width: 136rpx;
+    /* max-width: 136rpx; */
+    text-align: left;
+}
+
+
+.box_choose_content {
+    display: flex;
+    justify-content: space-around;
+}
+
+.box_choose_content_now_plan {
+    display: flex;
+    justify-content: space-around;
+    color: green;
+}
+
+.box_choose_content view {
+    line-height: 60rpx;
+    /* background: green; */
+    /* margin-bottom: 16rpx; */
+    padding: 8rpx 0;
+}
+
+.box_choose_content_now_plan view {
+    line-height: 60rpx;
+    padding: 8rpx 0;
+    /* background: green; */
+    /* margin-bottom: 16rpx; */
+}
+
+.box_choose_content_banlie {
+    width: 136rpx;
+    text-align: left;
+    max-width: 160rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.box_choose_content_content {
+    width: 140rpx;
+    text-align: center;
+}
+
+.box_choose_content_price {
+    width: 160rpx;
+    text-align: center;
+    white-space: nowrap;
+    /* overflow: hidden; */
+    /* text-overflow: ellipsis; */
+}
+
+/* .box_choose_whitch{
+    background: red;
+} */
+.box_choose_whitch:active {
+    background: #f5f5f5;
+}
+
+.over {
+    overflow: hidden;
+    zoom: 1;
+}
+.green{
+    color:green;
+}
+.red{
+    color: red;
+}

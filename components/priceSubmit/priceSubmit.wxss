@@ -1,0 +1,224 @@
+/* components/priceSubmit/priceSubmit.wxss */
+#priceSubmit {}
+.clickColor {
+    background: rgba(246, 246, 246, 0.6);
+    /* background-color: rgba(242, 242, 244, 1); */
+}
+.priceSubmit_base {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 112rpx;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px -2px 8px 0px rgba(0, 0, 0, 0.15);
+    line-height: 112rpx;
+    z-index: 9;
+    font-size: 36rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+    left: 0;
+    -webkit-user-select: none;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    safe-area-inset-bottom: 10rpx;
+}
+
+.z_index {
+    z-index: 999;
+}
+
+.priceSubmit_left_button {
+    background: rgba(255, 255, 255, 1);
+    /* height: 56rpx; */
+    line-height: 112rpx;
+    border-radius: 50%;
+    float: left;
+    margin-right: 12rpx;
+    margin-left: 20rpx;
+    /* width: 56rpx; */
+    text-align: center;
+    margin-top: 22rpx;
+    display: flex;
+    align-items: center;
+    /* background: red; */
+
+}
+
+.priceSubmit_left_button:after {
+    border: none;
+}
+
+.priceSubmit_left_button_active {
+    background: #eee;
+
+}
+
+.image_width{
+    width: 64rpx;
+    height: 64rpx;
+}
+
+.priceSubmit_left_icon {
+    /* margin-top: 20rpx; */
+    height: 112rpx;
+    line-height: 112rpx;
+    /* float: left; */
+    color: rgba(220, 62, 56, 1);
+    font-size: 50rpx;
+
+}
+
+.priceSubmit_left_icon_active {
+    height: 112rpx;
+    line-height: 112rpx;
+    float: left;
+    color: blue;
+    font-size: 60rpx;
+}
+
+.priceSubmit_left_gujia {
+    float: left;
+    font-size: 26rpx;
+}
+
+.priceSubmit_right {
+    /* float: right; */
+    margin-top: 12rpx;
+    /* margin-right: 32rpx; */
+    flex:1;
+    display: flex;
+    justify-content: center;
+}
+
+.priceSubmit_price {
+    display: inline-block;
+    font-size: 38rpx;
+    font-weight: bold;
+    color: rgba(220, 62, 56, 1);
+    width: 350rpx;
+    display: flex;
+    align-items: center;
+}
+
+.relative {
+    position: relative;
+}
+
+.price_detail {
+    width: 100rpx;
+    height: 100%;
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+}
+
+.price_detail_icon {
+    width: 16rpx;
+    height: 10rpx;
+    position: absolute;
+    top: 50%;
+    right: 16rpx;
+    transform: translateY(-50%);
+    transition: all 0.5s;
+}
+
+.kefu_lianxi {
+    width: 210rpx;
+    height: 88rpx;
+    background: rgba(220, 62, 56, 1);
+    border-radius: 16rpx;
+    font-size: 36rpx;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+    float: right;
+}
+
+.kefu_lianxi_isnotlogin {
+    width: 250rpx;
+    height: 88rpx;
+    background: rgba(220, 62, 56, 1);
+    border-radius: 16rpx;
+    font-size: 36rpx;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+    float: right;
+}
+
+.kefu_lianxi_active {
+    background: rgba(220, 62, 56, 0.9);
+
+}
+
+.mosaic {
+    width: 72rpx;
+    height: 32rpx;
+}
+
+.mosaicLoginFalse {
+    width: 32rpx;
+    height: 32rpx;
+}
+
+.over {
+    overflow: hidden;
+    zoom: 1;
+}
+
+.rotate {
+    transform: rotate(180deg);
+    transform-origin: top center;
+}
+.currency_switch{
+    /* width: 108rpx; */
+    height: 100%;
+    font-size: 38rpx;
+    display: flex;
+    justify-content: center;
+    padding-left: 8rpx;
+    margin-right: 8rpx;
+}
+.currency_item{
+    text-align: center;
+    border-bottom: 1px solid #f5f5f5;
+}
+.currency_active{
+    color: rgba(220, 62, 56, 0.9);
+}
+.priceDetail{
+    font-size: 38rpx;
+    padding-right: 40rpx;
+}
+.currency_icon_parent{
+    width: 30rpx;
+    height: 112rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.currency_icon{
+    width: 16rpx;
+    height: 10rpx;
+    /* position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%); */
+}
+
+
+
+.sellerFee_modal {
+    padding: 32rpx 32rpx 172rpx 32rpx;
+
+}
+
+.sellerFee {
+    padding: 32rpx 0;
+    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    justify-content: space-between;
+}
+.sellerFee_active {
+    background: #eee;
+}

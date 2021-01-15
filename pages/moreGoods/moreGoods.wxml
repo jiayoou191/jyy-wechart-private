@@ -1,0 +1,4 @@
+<!--pages/moreGoods/moreGoods.wxml-->
+<view class="more_goods">
+    <moreGoods wx:if="{{formInline}}" formInline="{{formInline}}"></moreGoods>
+</view>

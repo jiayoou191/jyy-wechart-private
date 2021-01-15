@@ -1,0 +1,27 @@
+export default {
+    please: 'At',
+    submitOrder: 'Submit',
+    timeOut: 'The current plan has expired',
+    submit: 'Submit',
+    concact: 'Contact',
+    empty: 'No data',
+    sendUser: 'Shipper',
+    getUser: 'Consignee',
+    notify: 'Notify Party',
+    same: 'Same as consignee',
+    name: 'Name',
+    inputName: 'Name',
+    address: 'Address',
+    inputAddress: 'Address',
+    phone: 'Mobile',
+    inputPhone: 'Mobile',
+    faxNumber:'Fax',
+    inputFaxNumber: 'Fax Number',
+    landlineNumber:'Phone',
+    inputLandlineNumber: 'Phone',
+
+    email: 'Email',
+    otherInfo: 'Other',
+    inputOther: 'Optional',
+    enplease:'submit within '
+}

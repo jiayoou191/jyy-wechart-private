@@ -1,0 +1,7 @@
+{
+  "usingComponents": {
+    "userInfo": "../../components/userInfo/userInfo",
+    "priceSubmit": "/components/priceSubmit/priceSubmit"
+  },
+  "navigationBarTitleText": "收发货人信息"
+}

@@ -1,0 +1,51 @@
+<card title="{{title}}" rightTitle="{{rightTitle}}" rightTitleColor="rgba(153,153,153,1)" bind:checkedChange="checkedChange" hasCheckBox="{{hasCheckBox}}">
+    <view class="userInfo_content">
+        <view class="formItem">
+            <view class="formlabel">{{language.name}}</view>
+            <view class="flex_grow">
+                <input style="height:32rpx;" confirm-type="next" focus="{{focusAble=='name'}}" bindconfirm="nextFocus" disabled="{{notifyIsSame}}" style="{{notifyIsSame?'color:rgba(153,153,153,1);':''}}" placeholder="{{language.inputName}}" data-form-item="name" value="{{formData.name}}" bindinput="changeFormData" />
+                <!-- <view class="errText">姓名格式不正确</view> -->
+            </view>
+            <view hover-class="{{!notifyIsSame?'clickColor':''}}" class="image_center well_click" bindtap="selectUser">
+                <image class="address_book" src="../../pages/image/icon/icon-contact.png" />
+                <image class="right_icon" src="../../pages/image/icon/icon-right.png" />
+            </view>
+        </view>
+        <view class="formItem flex flex_space-between">
+            <view class="formlabel">{{language.address}}</view>
+            <view class="flex_grow">
+                <input confirm-type="next" bindconfirm="nextFocus" focus="{{focusAble=='address'}}" placeholder="{{language.inputAddress}}" disabled="{{notifyIsSame}}" style="{{notifyIsSame?'color:rgba(153,153,153,1);':''}}" data-form-item="address" value="{{formData.address}}" bindinput="changeFormData" />
+            </view>
+        </view>
+        <view class="formItem flex flex_space-between">
+            <view class="formlabel">{{language.phone}}</view>
+            <view class="flex_grow">
+                <input confirm-type="next" bindconfirm="nextFocus" focus="{{focusAble=='phone'}}" placeholder="{{language.inputPhone}}" disabled="{{notifyIsSame}}" style="{{notifyIsSame?'color:rgba(153,153,153,1);':''}}" data-form-item="phone" value="{{formData.phone}}" bindinput="changeFormData" />
+            </view>
+        </view>
+        <view class="formItem flex flex_space-between">
+            <view class="formlabel">{{language.landlineNumber}}</view>
+            <view class="flex_grow">
+                <input confirm-type="next" bindconfirm="nextFocus" focus="{{focusAble=='landlineNumber'}}" placeholder="{{language.inputLandlineNumber}}" disabled="{{notifyIsSame}}" style="{{notifyIsSame?'color:rgba(153,153,153,1);':''}}" data-form-item="landlineNumber" value="{{formData.landlineNumber}}" bindinput="changeFormData" />
+            </view>
+        </view>
+        <view class="formItem flex flex_space-between">
+            <view class="formlabel">{{language.faxNumber}}</view>
+            <view class="flex_grow">
+                <input confirm-type="next" bindconfirm="nextFocus" focus="{{focusAble=='faxNumber'}}" placeholder="{{language.inputFaxNumber}}" disabled="{{notifyIsSame}}" style="{{notifyIsSame?'color:rgba(153,153,153,1);':''}}" data-form-item="faxNumber" value="{{formData.faxNumber}}" bindinput="changeFormData" />
+            </view>
+        </view>
+        <view class="formItem flex flex_space-between">
+            <view class="formlabel">{{language.email}}</view>
+            <view class="flex_grow">
+                <input confirm-type="next" bindconfirm="nextFocus" focus="{{focusAble=='email'}}" placeholder="example@jianyiyun.com" disabled="{{notifyIsSame}}" style="{{notifyIsSame?'color:rgba(153,153,153,1);':''}}" data-form-item="email" value="{{formData.email}}" bindinput="changeFormData" />
+            </view>
+        </view>
+        <view class="formItem flex flex_space-between">
+            <view class="formlabel">{{language.otherInfo}}</view>
+            <view class="flex_grow">
+                <input confirm-type="done" bindconfirm="nextFocus" focus="{{focusAble=='otherInfo'}}" placeholder="{{language.inputOther}}" data-form-item="otherInfo" disabled="{{notifyIsSame}}" style="{{notifyIsSame?'color:rgba(153,153,153,1);':''}}" value="{{formData.otherInfo}}" bindinput="changeFormData" />
+            </view>
+        </view>
+    </view>
+</card>

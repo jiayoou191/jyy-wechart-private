@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "mapSearch" : "../../components/map/map"
+
+  }
+}

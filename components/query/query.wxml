@@ -1,0 +1,394 @@
+<!-- components/query/query.wxml -->
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<view id="query" class="query">
+    <van-tabs line-width="14" line-height="2" bind:change="handleTabChange" active="{{ clickIndex }}" animated swipeable>
+        <van-tab wx:for="{{AllPlan}}" wx:key="index" title="{{languageBase[item.transportType]}}">
+            <view style="height:{{windowHeight}}px;" scroll-y="{{true}}" class="tab">
+                <view bindtap="handleChangeBox" class="box_choose over" hover-class="box_choose_active" wx:if="{{item.transportType == 'ShippingFCL' }}">
+                    <view class="box_choose_plan">{{language.boxPlan}}</view>
+                    <image src="../../pages/image/icon/icon-right.png"></image>
+                    <view class="box_choose_number" wx:if="{{item.boxes.length>0}}" wx:for="{{item.boxes}}" wx:for-item="i" wx:for-index="j" wx:key="j">
+                        {{common.boxesNameEnZh(i.boxDataEntry.name , languageName)}}*{{i.number}}
+                        <!-- ++{{i.boxDataEntry.name.length}}++ -->
+                        <text decode="{{true}}">&nbsp;</text>
+                    </view>
+                </view>
+                <!-- 更多方案 -->
+                <view wx:if="{{item.isOptionalPlans}}" bindtap="handlePlanChoose" class="box_choose over" hover-class="box_choose_active">
+                    <view class="box_choose_plan">{{language.morePlan}}</view>
+                    <view class="plan_Choose">{{language.planChoose}}{{planChooseIndex[item.transportType]?planChooseIndex[item.transportType]+1:1}}</view>
+                    <image src="../../pages/image/icon/icon-right.png"></image>
+                </view>
+                <view class="attentionFCL" wx:if="{{item.transportType=='ShippingFCL'}}">
+                    {{language.attentionFCL}}
+                </view>
+                <view wx:if="{{item.transportType != 'Express'}}" class="tab_stage1 over">
+                    <!-- <view > -->
+                    <image class="tab_stage1_img" src="../../pages/image/icon/icon-start.png"></image>
+                    <!-- </view> -->
+                    <!-- 海陆空的出发地 -->
+                    <view class="tab_stage1_tihuo" wx:if="{{item.transportType != 'Express'}}">
+                        {{ Query.from.formattedAddress }}
+                    </view>
+                    <!-- 快递的出发地 -->
+                    <!-- <view wx:else>{{ item.col }}</view> -->
+                    <!-- 航线的1到5 -->
+                    <view class="line_fee over">
+                        <view class="tab_stage1_line_father">
+                            <view class="tab_stage1_line"></view>
+                        </view>
+                        <view>
+                            <!-- 已经登陆,且数据完整的用户 -->
+                            <view wx:if="{{item.isLogin && !item.broken}}" class="tab_stage1_fee over">
+                                <view>{{language.inland}}: 
+                                    <!-- {{common.priceChangeShowHaveCurrency(item.stage1PlanPrice.value)}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage1Plan,'PortDeliveryFee',currency))}}
+                                </view>
+                                <view>{{language.pier}}:
+                                     <!-- {{common.priceChangeShowHaveCurrency(item.stage2PlanPortFee.value)}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage2Plan,'PortFee',currency))}}
+                                     </view>
+                                <view>{{language.customs}}:
+                                     <!-- {{common.priceChangeShowHaveCurrency(item.stage2PlanCutums.value)}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage2Plan,'CustomsClearanceAndManifestFees',currency))}}
+                                </view>
+                                <view>{{language.document}}: 
+                                    <!-- {{common.priceChangeShowHaveCurrency(item.stage2PlanDocument.value)}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage2Plan,'DocumentationAndServiceFees',currency))}}
+                                    </view>
+                                <view wx:if="{{(item.stage1Plan&&(item.stage1Plan.attention||item.stage1Plan.remark))||(item.stage2Plan&&(item.stage2Plan.attention||item.stage2Plan.remark))}}">
+                                    <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                    <view bindtap='handleAttention' data-item="{{item}}" data-name="2" class="tab_stage1_fee_attention">
+                                        {{language.attention}}
+                                    </view>
+                                </view>
+                            </view>
+                            <!-- 已经登陆,但数据不完整的用户 -->
+                            <view wx:if="{{item.isLogin && item.broken}}" class="tab_stage1_fee over">
+                                <view wx:if="{{item.stage1Plan}}">
+                                    {{language.inland}}:
+                                     <!-- {{item.stage1PlanPrice.value}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage1Plan,'PortDeliveryFee',currency))}}
+                                </view>
+                                <view wx:else>
+                                    {{language.inland}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view wx:if="{{item.stage2Plan}}">
+                                    {{language.pier}}: 
+                                    <!-- {{item.stage2PlanPortFee.value}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage2Plan,'PortFee',currency))}}
+                                </view>
+                                <view wx:else>
+                                    {{language.pier}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view wx:if="{{item.stage2Plan}}">
+                                    {{language.customs}}: 
+                                    <!-- {{item.stage2PlanCutums.value}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage2Plan,'CustomsClearanceAndManifestFees',currency))}}
+                                </view>
+                                <view wx:else>
+                                    {{language.customs}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view wx:if="{{item.stage2Plan}}">
+                                    {{language.document}}: 
+                                    <!-- {{item.stage2PlanDocument.value}} -->
+                                    {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage2Plan,'DocumentationAndServiceFees',currency))}}
+                                </view>
+                                <view wx:else>
+                                    {{language.document}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view wx:if="{{(item.stage1Plan&&(item.stage1Plan.attention||item.stage1Plan.remark))||(item.stage2Plan&&(item.stage2Plan.attention||item.stage2Plan.remark))}}">
+                                    <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                    <view bindtap='handleAttention' data-item="{{item}}" data-name="2" class="tab_stage1_fee_attention">
+                                        {{language.attention}}
+                                    </view>
+                                </view>
+                            </view>
+                            <!-- 未登陆用户 -->
+                            <view wx:if="{{!item.isLogin}}" class="tab_stage1_fee over">
+                                <view>
+                                     {{language.inland}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view>
+                                    {{language.pier}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view>
+                                    {{language.customs}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view>
+                                    {{language.document}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view wx:if="{{(item.stage1Plan&&(item.stage1Plan.attention||item.stage1Plan.remark))||(item.stage2Plan&&(item.stage2Plan.attention||item.stage2Plan.remark))}}">
+                                    <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                    <view bindtap='handleAttention' data-item="{{item}}" data-name="2" class="tab_stage1_fee_attention">
+                                        {{language.attention}}
+                                    </view>
+                                </view>
+                                <!-- <view><image src='../../pages/image/icon/icon-attention.png' style="width:35px; height:35px; float: left" /><text style='height:35px;line-height:35px;'>注意事项</text></view> -->
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                <view class="tab_stage1 over">
+                    <!-- 海陆空的第三段 -->
+                    <view wx:if="{{item.transportType != 'Express'}}">
+                        <view>
+                            <image wx:if="{{item.planCardType=='Shipping'}}" class="tab_stage1_img" src="../../pages/image/icon/icon-shipping.png"></image>
+                            <image wx:if="{{item.planCardType=='Air'}}" class="tab_stage1_img" src="../../pages/image/icon/icon-air_go.png"></image>
+                            <image wx:if="{{item.planCardType=='Railway'}}" class="tab_stage1_img" src="../../pages/image/icon/icon-railway.png"></image>
+                            <!-- planCardType -->
+                            <view wx:if="{{languageName =='中文'}}" class="tab_stage1_tihuo over">
+                                <view class="flex_v2"><view class="{{item.pol.length ==3?'flex_v2_child_3':'flex_v2_child_5'}} mar_right">{{item.polNameZh}} {{item.polNameEn}}</view>({{item.pol}})</view>
+                            </view>
+                            <view wx:else class="tab_stage1_tihuo over">
+                                <view class="tab_stage1_tihuo_float">
+                                <view class="flex_v2"><view class="{{item.pol.length ==3?'flex_v2_child_3':'flex_v2_child_5'}} mar_right">{{item.polNameEn}}</view>({{item.pol}})</view>
+                                </view>
+                            </view>
+                        </view>
+                        <view>
+                            <view class="tab_stage3_line_father">
+                                <view wx:if="{{item.transportType=='ShippingFCL' || item.transportType=='ShippingLCL'}}" class="tab_stage3_line_ship"></view>
+                                <view wx:if="{{item.transportType=='RailwayFCL' || item.transportType=='RailwayLCL'}}" class="tab_stage3_line_railway"></view>
+                                <view wx:if="{{item.transportType=='Air'}}" class="tab_stage3_line_air"></view>
+                            </view>
+                            <view class="tab_stage3_border over">
+                                <view class="tab_stage3_border_all">
+                                    <view class="tab_stage3_border_carrier">
+                                        {{item.stage3Plan.carrier}}
+                                    </view>
+                                    <view class="tab_stage3_border_days">
+                                        {{language.wholeProcess}} {{item.stage3TransitTime}} {{language.day}}
+                                    </view>
+                                    <view class="tab_stage3_border_tiqian_days">
+                                        {{languageBase[item.transportType]}}
+                                    </view>
+                                </view>
+                            </view>
+                            <view class="tab_stage3_content">
+                                    <view>
+                                        {{language.weekly}} <text wx:if="{{languageName =='中文'}}">{{common.changeetd(item.etd)}}</text> <text wx:else>{{common.changeetdEn(item.etd)}}</text> {{language.shipping}}, {{language.advance}}{{item.transportType=='Air'?'2':'4'}}{{language.day}}{{language.collect}}
+                                    </view>
+                                    <!-- 已经登陆用户第三段 -->
+                                    <view wx:if="{{item.isLogin}}">
+                                        {{language.transportationCosts}}: 
+                                        <!-- {{item.stage3Plan.priceSummary.currency}}{{common.priceChangeShow_v2(item.stage3PlanPrice.value)}} -->
+                                        {{common.priceChangeShow_v2(common.getStage3PlanFee(item,currency))}}
+                                    </view>
+                                    <!-- 没有登陆用户的第三段 -->
+                                    <view wx:else>
+                                        {{language.transportationCosts}}:
+                                        <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                    </view>
+                                    <view>
+                                        {{language.validity}}: {{common.formatTime(item.rvfInUtc)}}-{{common.formatTime(item.rveInUtc)}}
+                                    </view>
+                                    <view wx:if="{{item.stage3Plan.remark||item.stage3Plan.attention}}">
+                                        <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                        <view class="tab_stage1_fee_attention" bindtap='handleAttention' data-item="{{item}}" data-name="6">
+                                            {{language.attention}}
+                                        </view>
+                                    </view>
+                                </view>
+                        </view>
+                    </view>
+                    <!-- 快递的第三段 -->
+                    <view wx:else>
+                        <view>
+                            <image class="tab_stage1_img" src="../../pages/image/icon/icon-start.png"></image>
+                            <view class="tab_stage1_tihuo">{{ Query.from.formattedAddress }}</view>
+                        </view>
+                        <view>
+                            <view class="tab_stage1_line_father">
+                                <view class="tab_stage3_line_express"></view>
+                            </view>
+                            <view class="tab_stage3_border over">
+                                <view class="tab_stage3_border_all">
+                                    <!-- <image class="tab_stage3_border_img" src="../../pages/image/icon/icon-shipping.png"></image> -->
+                                    <view class="tab_stage3_border_carrier">
+                                        {{item.plan.carrier}}
+                                    </view>
+                                    <view class="tab_stage3_border_days">
+                                        {{language.wholeProcess}} {{item.transitTime}} {{language.day}}
+                                    </view>
+                                    <view class="tab_stage3_border_tiqian_days">
+                                        {{languageBase[item.transportType]}}
+                                    </view>
+                                </view>
+                            </view>
+                            <view class="tab_stage3_content over">
+                                <view>{{language.allDay}}</view>
+                                <!-- 已经登陆用户的第三段 -->
+                                <view wx:if="{{item.isLogin }}">
+                                    {{language.transportationCosts}}:
+                                     <!-- {{item.CURRENCY}}{{common.priceChangeShow(common.parseFloat(item.priceValueDisplay))}} -->
+                                     {{common.priceChangeShow_v2(common.getExpressFee(item,currency))}}
+                                </view>
+                                <!-- 没有登陆用户的第三段 -->
+                                <view wx:if="{{!item.isLogin}}">
+                                    {{language.transportationCosts}}:
+                                    <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                                </view>
+                                <view wx:if="{{item.productDetail||item.location}}">
+                                    <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                    <view class="tab_stage1_fee_attention" bindtap='handleAttention' data-item="{{item}}" data-name="3">
+                                        {{language.attention}}
+                                    </view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                <view wx:if="{{item.transportType != 'Express'}}" class="tab_stage1 over">
+                    <image wx:if="{{item.planCardType=='Shipping'}}" class="tab_stage1_img" src="../../pages/image/icon/icon-shipping.png"></image>
+                    <image wx:if="{{item.planCardType=='Railway'}}" class="tab_stage1_img" src="../../pages/image/icon/icon-railway.png"></image>
+                    <image wx:if="{{item.planCardType=='Air'}}" class="tab_stage1_img" src="../../pages/image/icon/icon-air_down.png"></image>
+                    <!-- 海陆空的出发地 -->
+                    <view class="tab_stage1_tihuo">
+                        <view wx:if="{{languageName =='中文'}}" class="tab_stage1_tihuo over">
+                            <view class="flex_v2"><view class="{{item.pol.length ==3?'flex_v2_child_3':'flex_v2_child_5'}} mar_right">{{item.podNameZh}} {{item.podNameEn}}</view>({{item.pod}})</view>
+                        </view>
+                        <view wx:else class="tab_stage1_tihuo over">
+                            <view class="flex_v2"><view class="{{item.pol.length ==3?'flex_v2_child_3':'flex_v2_child_5'}} mar_right">{{item.podNameEn}}</view>({{item.pod}})</view>
+                        </view>
+                    </view>
+                    <!-- 航线的1到5 -->
+                    <view>
+                        <view class="tab_stage1_line_father">
+                            <view class="tab_stage1_line"></view>
+                        </view>
+                        <!-- 已经登陆用户，且数据完整 -->
+                        <view wx:if="{{item.isLogin && !item.broken}}" class="tab_stage1_fee over">
+                            <view>{{language.inland}}: 
+                                <!-- {{common.priceChangeShowHaveCurrency(item.stage5PlanPrice.value)}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage5Plan,'PortDeliveryFee',currency))}}
+                                </view>
+                            <view>{{language.pier}}:
+                                <!-- {{common.priceChangeShowHaveCurrency(item.stage4PlanPortFee.value)}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage4Plan,'PortFee',currency))}}
+                            </view>
+                            <view>{{language.customs}}: 
+                                <!-- {{common.priceChangeShowHaveCurrency(item.stage4PlanCutums.value)}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage4Plan,'CustomsClearanceAndManifestFees',currency))}}
+                                </view>
+                            <view>{{language.document}}: 
+                                <!-- {{common.priceChangeShowHaveCurrency(item.stage4PlanDocument.value)}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage4Plan,'DocumentationAndServiceFees',currency))}}
+                                </view>
+                            <view wx:if="{{(item.stage4Plan&&(item.stage4Plan.attention||item.stage4Plan.remark))||(item.stage5Plan&&(item.stage5Plan.attention||item.stage5Plan.remark))}}">
+                                <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                <view class="tab_stage1_fee_attention" bindtap='handleAttention' data-item="{{item}}" data-name="5">
+                                    {{language.attention}}
+                                </view>
+                            </view>
+                        </view>
+                        <!-- 已经登陆用户， 但数据不完整 -->
+                        <view wx:if="{{item.isLogin && item.broken}}" class="tab_stage1_fee over">
+                            <view wx:if="{{item.stage5Plan}}">
+                                {{language.inland}}: 
+                                <!-- {{item.stage5PlanPrice.value}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage5Plan,'PortDeliveryFee',currency))}}
+                            </view>
+                            <view wx:else>
+                                {{language.inland}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view wx:if="{{item.stage4Plan }}">
+                                {{language.pier}}: 
+                                <!-- {{item.stage4PlanPortFee.value}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage4Plan,'PortFee',currency))}}
+                            </view>
+                            <view wx:else>
+                                {{language.pier}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view wx:if="{{item.stage4Plan}}">
+                                {{language.customs}}: 
+                                <!-- {{item.stage4PlanCutums.value}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage4Plan,'CustomsClearanceAndManifestFees',currency))}}
+                            </view>
+                            <view wx:else>
+                                {{language.customs}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view wx:if="{{item.stage4Plan}}">
+                                {{language.document}}:
+                                 <!-- {{item.stage4PlanDocument.value}} -->
+                                {{common.priceChangeShow_v2(common.getPlanNameFee(item.stage4Plan,'DocumentationAndServiceFees',currency))}}
+                            </view>
+                            <view wx:else>
+                                {{language.document}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view wx:if="{{(item.stage4Plan&&(item.stage4Plan.attention||item.stage4Plan.remark))||(item.stage5Plan&&(item.stage5Plan.attention||item.stage5Plan.remark))}}">
+                                <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                <view class="tab_stage1_fee_attention" bindtap='handleAttention' data-item="{{item}}" data-name="5">
+                                    {{language.attention}}
+                                </view>
+                            </view>
+                        </view>
+                        <!-- 没有登陆的用户 -->
+                        <view wx:if="{{!item.isLogin}}" class="tab_stage1_fee over">
+                            <view>
+                                {{language.inland}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view>
+                                {{language.pier}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view>
+                                {{language.customs}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view>
+                                {{language.document}}:
+                                <image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+                            </view>
+                            <view wx:if="{{(item.stage4Plan&&(item.stage4Plan.attention||item.stage4Plan.remark))||(item.stage5Plan&&(item.stage5Plan.attention||item.stage5Plan.remark))}}">
+                                <image class="tab_stage1_fee_image" src="../../pages/image/icon/icon-attention.png"></image>
+                                <view class="tab_stage1_fee_attention" bindtap='handleAttention' data-item="{{item}}" data-name="5">
+                                    {{language.attention}}
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                <!-- 快递的数据 -->
+                <view wx:else>
+                    <!-- 快递的出发地 -->
+                    <image class="tab_stage1_img" src="../../pages/image/icon/icon-over.png"></image>
+                    <view class="tab_stage1_tihuo">{{ Query.to.formattedAddress }}</view>
+                </view>
+                <!-- 具体目的地址 -->
+                <view wx:if="{{item.transportType != 'Express'}}" class="tab_stage1 over">
+                    <image class="tab_stage1_img" src="../../pages/image/icon/icon-over.png"></image>
+                    <!-- 海陆空的出发地 -->
+                    <view class="tab_stage1_tihuo">{{ Query.to.formattedAddress }}</view>
+                    <!-- 航线的1到5 -->
+                </view>
+                <!-- <view class="kong_view"></view> -->
+            </view>
+        </van-tab>
+    </van-tabs>
+    <!-- <van-submit-bar price="{{ price }}" label="估价" button-text="联系客服" open-type='contact' bind:submit="handleSubmit" /> -->
+    <priceSubmit bind:currencyChange="currencyChange" bind:onClick="handleCreate" currencySwitch price="{{price}}" needPlan="{{NeedPlan}}"></priceSubmit>
+    <van-dialog use-slot title="{{languageBase.attention}}" confirm-button-text="{{languageBase.ok}}" show="{{ dialogShow }}" confirm-button-open-type="getUserInfo" bind:close="handleDialogClose" bind:getuserinfo="getUserInfo">
+        <view wx:if="{{attentionContent.length>0}}">
+            <view wx:for="{{attentionContent}}" wx:key="index" class="{{index+1==attentionContent.length?'attention_dialog_footer':'attention_dialog'}}">
+                <!-- {{attentionContent.length}} -->
+                <view>{{item}}</view>
+                <!-- <view wx:else>{{attentionContent.length}}暂无注意事项</view> -->
+            </view>
+        </view>
+        <view wx:else class="attention_dialog_footer">{{language.noAttention}}</view>
+    </van-dialog>
+</view>

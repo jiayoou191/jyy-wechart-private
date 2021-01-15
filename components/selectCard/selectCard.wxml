@@ -1,0 +1,102 @@
+<!-- components/selectCard/selectCard.wxml -->
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+
+<view  class="card_top">
+
+<view class="card_size" wx:for="{{allPlan}}" wx:key="index" data-item="item">
+	<view bindtap='handleCardClick'  data-index="{{index}}" data-item="{{item}}"  class="card_border" hover-class="card_border_active">
+		<view class="card_title">
+			<view class="feature">
+				<view class="card_transportType">
+					{{languageBase[item.transportType]}}
+				</view>
+				<view class="card_card mar_right" wx:if="{{allPlan.length>1 && index==0}}">{{language.cheap}}</view>
+				<view class="card_card_shenxin mar_right" wx:if="{{allPlan.length>1 && item.fastest =='fastest'}}">{{language.quick}}</view>
+				<view class="card_card_fastest" wx:if="{{item.transportType =='Express' && index !=0}}">{{language.worry}}</view>
+			</view>
+			<!-- <van-tag wx:if="{{index==0}}" mark type="warning">最便宜</van-tag> -->
+			<!-- 已经登陆,且数据完整的用户 -->
+			<view wx:if="{{item.isLogin && !item.broken}}" class="card_price">
+				{{currency}}
+				
+				<text wx:if="{{item.transportType == 'Express'}}" decode="{{true}}">&nbsp;{{common.priceChangeShow_v2(common.getPriceValueDisplay(currency,item))}}</text>
+				<text decode="{{true}}" wx:if="{{item.transportType != 'Express' && isShipperOrConsignee=='Shipper'}}">&nbsp;{{common.priceChangeShow_v2(common.getTotalPrice(item,currency,incoterms,formData)-common.getBuyerOrSellerPrice(item,currency,incoterms,'buyer'))}}</text>
+				<text  decode="{{true}}" wx:if="{{item.transportType != 'Express' && isShipperOrConsignee=='Consignee'}}">&nbsp;{{common.priceChangeShow_v2(common.getBuyerOrSellerPrice(item,currency,incoterms,'buyer'))}}</text>
+			</view>
+			<!-- 已经登陆,但数据不完整的用户 -->
+			<view wx:if="{{item.isLogin && item.broken}}" class="card_price">
+				{{currency}}<text decode="{{true}}">&nbsp;&nbsp;</text>
+				<image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+			</view>
+			<!-- 未登陆,但数据完整的用户 -->
+			<view wx:if="{{!item.isLogin && !item.broken}}" class="card_price">
+				{{currency}}<text decode="{{true}}">&nbsp;&nbsp;</text>
+				<image class="mosaicLoginFalse" src="../../pages/image/icon/mosaic.png"></image>{{common.parseFloat(item.priceValueLoginFalse)}}<text></text>
+			</view>
+			<!-- 未登陆,且数据不完整的用户 -->
+			<view wx:if="{{!item.isLogin && item.broken}}" class="card_price">
+				{{currency}}<text decode="{{true}}">&nbsp;&nbsp;</text>
+				<image class="mosaic" src="../../pages/image/icon/mosaic.png"></image>
+			</view>
+		</view>
+		<view class="card_from_to">
+			<!-- 海陆空的目的地址选择 -->
+			<view wx:if="{{item.pol && item.pod  }}" class="card_address_from_to over">
+					<view class="card_from">
+						<!-- <image class="card_from_image" src="../../pages/image/location.png"></image> -->
+						<image class="card_image" src="../../pages/image/icon/icon_start.png"></image>
+						<text class="card_address_word_from">{{languageCountry[item.col]}}·{{ languageFlag=='中文'?item.polNameZh:item.polNameEn }}</text>
+					</view>
+					<view class="card_time">
+						<view class="card_time_wrapper">
+							<view class="card_time_word" >{{item.stage3TransitTime}} {{languageBase.days}} </view>
+							<image class="card_image_line"  src="../../pages/image/icon/icon_jiantou.png"></image>
+						</view>
+					</view>
+					<view class="card_to">
+						<image class="card_image" src="../../pages/image/icon/icon-finsish.png"></image>
+						<text class="card_address_word_to">{{languageCountry[item.cod]}}·{{ languageFlag=='中文'?item.podNameZh:item.podNameEn }}</text>
+					</view>
+			</view>
+			<view wx:else class="card_address_from_to over">
+				<!-- 快递的目的地址选择 -->
+				<view class="card_from" >
+					<!-- <image class="card_from_image" src="../../pages/image/location.png"></image> -->
+					<image class="card_image" src="../../pages/image/icon/icon_start.png"></image>
+					<text class="card_address_word_from">{{ languageCountry[item.col] }}</text>
+				</view>
+				<view class="card_time">
+					<view class="card_time_wrapper">
+						<view class="card_time_word">{{item.transitTime}} {{languageBase.days}}</view>
+						<image class="card_image_line" src="../../pages/image/icon/icon_jiantou.png"></image>
+					</view>
+
+				</view>
+				<view class="card_to">
+					<image class="card_image" src="../../pages/image/icon/icon-finsish.png"></image>
+					<text class="card_address_word_to">{{ languageCountry[item.cod] }}</text>
+				</view>
+				
+			</view>
+		</view>
+		<view class="card_plan">
+			<view style="width:100rpx;text-align:center; white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{language.pickUp}}</view>
+			<!-- <image class="card_plan_image_line_from" src="../../pages/image/placeholder.png"></image> -->
+			<view class="card_plan_image_line_from"></view>
+			<view class="card_plan_transportType">{{languageBase[item.transportType]}}</view>
+			<!-- <image class="card_plan_image_line_to" src="../../pages/image/placeholder.png"></image> -->
+			<view class="card_plan_image_line_from"></view>
+			<view style="width:100rpx;text-align:center;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">{{language.delivery}}</view>
+		</view>
+		<view class="card_etd"> 
+			<view wx:if="{{item.transportType !='Express'}}">
+			
+				<view >{{language.weekly}} <text wx:if="{{languageName=='中文'}}">{{common.changeetd(item.etd)}}</text><text wx:else>{{common.changeetdEn(item.etd)}}</text> {{language.Ship}}</view>
+			</view>	
+			<view wx:else>
+				<view >{{language.allDay}}</view>
+			</view>
+		</view>	
+	</view>
+</view>
+</view>

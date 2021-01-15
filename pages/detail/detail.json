@@ -1,0 +1,15 @@
+{
+    "usingComponents": {
+        "goods" : "../../components/goods/goods",
+        "detailPlan" : "../../components/query/query",
+        "boxChoose" : "../../components/boxChoose/boxChoose",
+        "planChoose" : "../../components/planChoose/planChoose"
+
+
+      },
+    "navigationBarTitleText": "方案详情",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#eeeeee",
+    "backgroundTextStyle": "light"
+}

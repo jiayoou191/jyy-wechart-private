@@ -1,0 +1,42 @@
+<!-- components/itemTypeChoose/itemTypeChoose.wxml -->
+<view class="home_itemTypeChoose">
+  <van-tabs type="line" line-width="14" line-height="2" custom-class="tab_style" bind:change="handleTabsChange" active="{{ checkIndex }}" animated bind:click="handleTabsClick">
+    <van-tab wx:for="{{accessibleItemTypes}}" wx:key="index" title="{{language[item.name]}}">
+      <view wx:if="{{item.name != '国际文件'}}">
+        <view wx:for="{{formInline}}" wx:key="index" wx:if="{{index == 0 }}" class="item_type_goods over">
+          <!-- <view class="item_type_goods_border"> -->
+          <scroll-view class="sysScroll" scroll-y="{{sysScroll}}">
+            <image class="item_type_goods_image" src="../../pages/image/icon/icon-goods.png"></image>
+            <!-- </view> -->
+            <van-cell-group>
+              <van-field custom-style="width:500rpx;margin-bottom:20rpx;" value="{{ item.name }}" bind:focus="handleFocus" bind:blur="handleBlur" border="{{ false }}" data-index="{{index}}" data-name="名称" bind:change="handleChange" clearable='{{true}}' placeholder="{{language.please_choice}}" />
+              <view class="item_type_input over">
+                <input value="{{ item.volume }}" data-index="{{index}}" data-name="体积" bind:input="handleChange" type="digit" placeholder="{{language.volume}}" class="item_type_goods_input" />
+                <view class="input_size_label_right">m³</view>
+              </view>
+              <view class="item_type_input over item_type_input_kg">
+                <input value="{{ item.weight }}" data-index="{{index}}" data-name="重量" bind:input="handleChange" type="digit" placeholder="{{language.weight}}" class="item_type_goods_input" />
+                <view class="input_size_label_right">kg</view>
+              </view>
+            </van-cell-group>
+          </scroll-view>
+        </view>
+        <view wx:if="{{formInline.length == 1 || formInline.length == 0}}" class="item_type_add_more" hover-class="item_type_add_more_active" bindtap="handleMore">
+          +{{language.select_more}}
+        </view>
+        <view wx:if="{{formInline.length > 1}}" class="item_type_add_more" hover-class="item_type_add_more_active" bindtap="handleMore">
+          {{language.viewAll}}{{formInline.length}}{{language.goodsCount}}
+        </view>
+      </view>
+      <view wx:else>
+        <van-radio-group value="{{ radio }}" bind:change="onChange">
+          <van-cell-group>
+            <van-cell wx:for="{{internetDocument}}" wx:key="index" title="{{item.weightShow}}" clickable data-name="{{item.id}}" bind:click="handleDocumentClick">
+              <van-radio checked-color="#DC3E38" slot="right-icon" name="{{item.id}}" />
+            </van-cell>
+          </van-cell-group>
+        </van-radio-group>
+      </view>
+    </van-tab>
+  </van-tabs>
+</view>

@@ -1,0 +1,33 @@
+<!-- components/map/map.wxml -->
+<view>
+    <view class="{{searchContent.length==0?'map_search_radius map_search':'map_search_none'}}">
+        <van-search custom-class="{{searchContent.length <= 0 && !isShow?'customClass':''}}"	 value="{{ addressInform.address }}" data-item="{{addressInform.address}}" label="" placeholder="{{language['map_placeholder']}}"  bind:change="onChange"  bind:focus='handleFocus' bind:blur='handleBlur' bind:clear="handleClear" focus="{{isFocus}}"   bind:search="handleSearch">
+        </van-search>
+    </view>
+    <view class="map_option {{searchContent.length>0?'map_search_radius':''}}">
+        <!-- 是否显示菊花 -->
+        <view wx:if="{{loadIsShow}}" class="loading">
+            <van-loading color="#DC3E38" />
+        </view>
+        <view class="map_search_radius" wx:else>
+            <view class="map_option_choose_noInform" wx:if="{{searchContent.length <= 0 && isShow}}">
+                {{language['map_noaddress']}}
+            </view>
+            <view wx:for="{{searchContent}}" wx:key="index">
+                <view class="mid_box">
+                    <view wx:if="{{searchContent.length>0 && isShow}}" data-index="{{index}}" data-address="{{item}}" bindtap='handleAddressChoose'  hover-class="map_search_active" class="{{index==searchContent.length-1?'map_search_radius':'' }} map_option_choose mid_inner {{index==0?'map_search_borderTop':''}}">
+                        <view class="map_option_choose_zhu">{{item.formattedAddress}}</view>
+                        <view class="map_option_choose_fu">
+                            <text wx:if="{{item.adminDistrict2}}">{{item.adminDistrict2}},</text>
+                            <text wx:if="{{item.adminDistrict && item.adminDistrict2 &&  item.adminDistrict2.indexOf(i.adminDistrict)==-1}}">
+                                {{item.adminDistrict}},
+                            </text>
+                            {{country[item.countryRegionIso2]}}
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <van-notify id="van-notify" />
+    </view>
+</view>

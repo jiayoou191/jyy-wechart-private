@@ -1,0 +1,11 @@
+<!-- components/coverInput/coverInput.wxml -->
+<cover-view class="bac">
+    <cover-view class="seacrh__v2_icon_border">
+        <!-- <van-icon name="search" class="search_v2_icon" /> -->
+        <cover-image class="search_v2_icon" src="../../pages/image/icon/icon-search.png"></cover-image>
+    </cover-view>
+    <cover-view class='cover-input' bindtap='tapInput'>
+        <cover-view class='text'>{{inputInfo}}</cover-view>
+        <input class='input' value='{{inputModel}}' focus='{{inputFocus}}' bindblur='blurInput'></input>
+    </cover-view>
+</cover-view>

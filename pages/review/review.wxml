@@ -1,0 +1,185 @@
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+
+<van-notify id="van-notify" />
+<view class="review" style="{{transportType=='国际快递'?'height:100%;':''}}">
+    <scroll-view scroll-y="{{!modalShow}}">
+        <goodsInfo modalShow="{{goodsShow}}" bind:handleClose="handleClose" title="{{language.goodsInfo}}" dataSource="{{formInline}}" />
+        <van-popup show="{{ modalShow }}" custom-style="border-radius:24rpx 24rpx 0px 0px;overflow:hidden;" position="bottom" bind:close="onModalClose">
+            <view class="modal_container">
+                <view wx:if="{{modalType=='tradeTerms'}}" class="tradeTerms_modal flex flex_space_between  {{tradeTermsSliper=='left'?'tradeTerms_modal_sliper_left':''}}">
+                    <view class="tradeTerms padding">
+                        <view class="modal_title modal_bold">{{language.tradeTerms}}</view>
+                        <view class="tradeTerm_item flex flex_space_between" hover-class="clickColor" data-code="{{item}}" wx:for="{{tradeTerms}}" wx:key="index" bindtap="tradeTermsSlected">
+                            <view data-code="{{item}}">{{baselanguage[item]}}</view>
+                            <view hidden="{{lastTradeTermsSlected!=item}}" class="tradeTerm_item_checked">
+                                <van-checkbox value="{{ lastTradeTermsSlected===item }}" icon-size="40rpx" checked-color="#DC3E38" shape="round" />
+                            </view>
+                        </view>
+                    </view>
+                    <view hidden="{{tradeTermsSliper!='left'}}" class="tradeTerms_price padding">
+                        <view class="modal_title modal_bold clearfix">
+                            <view class="image_center tradeTerms_back_icon left" bindtap="tradeTermsSliperBack">
+                                <van-icon name="arrow-left" />
+                            </view>
+                            <view class="left">{{language.input}}{{language.totalPrice}}</view>
+                            <view class="right price_confirm" bindtap="tradeTermsPriceConfirm">
+                                {{language.confirm}}
+                            </view>
+                        </view>
+                        <view wx:if="{{tradeTermsSlected=='DDP'}}" wx:for="{{formData['DDP']}}" wx:key="index" class="tradeTerms_prices_item">
+                            <view class="tradeTerms_price_title">
+                                {{item.name}}·{{item.weight}}kg·{{item.volume}}m³
+                            </view>
+                            <view class="tradeTerms_price_item flex align_items_center">
+                                <view class="input_label">{{language.totalPrice}}</view>
+                                <view class="flex_grow">
+                                    <input type="digit" data-index="{{index}}" value="{{item.totalPrice}}" data-price-item="totalPrice" bindinput="changePriceItem" placeholder="{{language.inputNumber}}" />
+                                </view>
+                                <view class="percent">{{currency}}</view>
+                            </view>
+                            <view class="tradeTerms_price_item flex align_items_center">
+                                <view class="input_label">{{language.tariff}}</view>
+                                <view class="flex_grow">
+                                    <input type="digit" data-index="{{index}}" value="{{item.tariff}}" data-price-item="tariff" bindinput="changePriceItem" placeholder="{{language.inputPercent}}" />
+                                </view>
+                                <view class="percent">%</view>
+                            </view>
+                            <view class="tradeTerms_price_item flex align_items_center">
+                                <view class="input_label">{{language.vat}}</view>
+                                <view class="flex_grow">
+                                    <input type="digit" data-index="{{index}}" value="{{item['VAT']}}" data-price-item="VAT" bindinput="changePriceItem" placeholder="{{language.inputPercent}}" />
+                                </view>
+                                <view class="percent">%</view>
+                            </view>
+                        </view>
+                        <view wx:if="{{tradeTermsSlected=='CIF'||tradeTermsSlected=='CIP目的港'}}" class="tradeTerms_prices_item">
+                            <view class="tradeTerms_price_item flex align_items_center">
+                                <view class="input_label">{{language.totalPrice}}</view>
+                                <view class="flex_grow">
+                                    <input type="digit" placeholder="{{language.inputNumber}}" value="{{formData['CIF']}}" bindinput="changePriceItem" />
+                                </view>
+                                <view class="percent">{{currency}}</view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                <view wx:if="{{modalType=='sellerFee'}}" class="sellerFee_modal">
+                    <view data-type="Shipper" bindtap='handleTypeChoose' class="sellerFee clearFix">
+                        <view class="left">{{language.sellerFee}}:</view>
+                        <view class="right">
+                            <!-- {{needPlan.currency}}{{common.priceChangeShow_v2(sellerFee)}} -->
+                            {{currency}}{{common.priceChangeShow_v2(common.getTotalPrice(needPlan,currency,lastTradeTermsSlected,formData)-common.getBuyerOrSellerPrice(needPlan,currency,lastTradeTermsSlected,'buyer',formData))}}
+                        </view>
+                    </view>
+                    <view data-type="Consignee" bindtap='handleTypeChoose' class="sellerFee clearFix">
+                        <view class="left">{{language.buyerFee}}:</view>
+                        <view class="right">
+                            <!-- {{needPlan.currency}}{{common.priceChangeShow_v2(buyerFee)}} -->
+                            {{currency}}{{common.priceChangeShow_v2(common.getBuyerOrSellerPrice(needPlan,currency,lastTradeTermsSlected,'buyer',formData))}}
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </van-popup>
+        <card title="{{language.goodsInfo}}" minHeight="200" needAppend bind:showDetail="showGoodsInfo">
+            <view class="goods">
+                <view class="goods_title clearFix">
+                    <text class="left">{{typelanguage[formType.name]}}</text>
+                    <text class="light_color right">{{language.all}}{{formInline.length}}{{language.piece}}</text>
+                </view>
+                <view wx:if="{{formType.id!='200602151639hY0VBhhU'}}" class="goods_item flex">
+                    <view class="goods_name">{{formInline[0].name}}</view>
+                    <view class="goods_weight">{{formInline[0].weight}}kg</view>
+                    <view>{{formInline[0].volume}}m³</view>
+                </view>
+                <view wx:else class="goods_item flex">
+                    <view class="goods_name">{{baselanguage[formInline[0].name]}}</view>
+                    <view class="goods_weight">
+                        {{formInline[0].weight-0.5}}-{{formInline[0].weight}}kg
+                    </view>
+                </view>
+                <view wx:if="{{needPlan.boxes.length>0}}" class="boxes_plan clearFix">
+                    <view class="boxes_plan_label">{{language.boxPlan}}:</view>
+                    <view class="box_item clearFix">
+                        <view wx:key="index" class="left clearFix" wx:for="{{needPlan.boxes}}">
+                            <view class="left">{{common.boxesNameEnZh(item.boxDataEntry.name , languageName)}} *{{item.number}}</view>
+                            <view wx:if="{{index<needPlan.boxes.length-1}}" class="left box_item_space">
+                                ,
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </card>
+        <card title="{{baselanguage[transportType]}}" icon="{{iconUrl}}" minHeight="200">
+            <view class="plan_info">
+                <view class="flex align_items_center">
+                    <view class="circular circular_green"></view>
+                    <view wx:if="{{transportType != '国际快递'}}" class="addressFrom ellipsis">
+                        <!-- {{addressFrom.countryRegion}}·{{addressFrom.formattedAddress}} -->
+                        {{languageCountry[needPlan.col]}}·{{addressFrom.formattedAddress}}
+
+                    </view>
+                    <view wx:else class="addressFrom ellipsis">{{languageCountry[addressFrom]}}</view>
+                </view>
+                <view class="plan_info_content">
+                    <view wx:if="{{transportType != '国际快递'}}">
+                        <!-- <view class="pol">{{pol.length ==3?languageIata[pol]:languagePort[pol] }}</view> -->
+                        <view class="pol flex" wx:if="{{languageName=='中文'}}"><view class="{{needPlan.pol.length ==3?'max_width_3':'max_width_5'}} mar_right">{{needPlan.polNameZh}}{{needPlan.polNameEn}} </view > ({{needPlan.pol}})</view>
+                        <view class="pol flex" wx:else><view class="max_width mar_right">{{needPlan.polNameEn}} </view> ({{needPlan.pol}})</view>
+
+
+                        <view class="supplier flex flex_space_between">
+                            <view >{{needPlan.stage3Plan.carrier}}</view>
+                            <view >{{language.wholeProcess}} {{needPlan.stage3TransitTime}} {{language.day}}</view>
+                            <view>{{baselanguage[transportType]}}</view>
+                        </view>
+                        <!-- <view class="pod">{{pod.length ==3?languageIata[pod]:languagePort[pod] }}</view> -->
+                        <view class="pod flex" wx:if="{{languageName=='中文'}}"><view class="{{needPlan.pod.length ==3?'max_width_3':'max_width_5'}} mar_right">{{needPlan.podNameZh}}{{needPlan.podNameEn}} </view> ({{needPlan.pod}})</view>
+                        <view class="pod flex" wx:else><view class="max_width mar_right">{{needPlan.podNameEn}} </view> ({{pod}})</view>
+
+                    </view>
+                    <view wx:else>
+                        <view class="supplier flex flex_space_between">
+                            {{needPlan.carrier}}
+                            <view>{{language.wholeProcess}} {{needPlan.transitTime}} {{language.day}}</view>
+                            <view>{{baselanguage[transportType]}}</view>
+                        </view>
+                    </view>
+                </view>
+                <view class="flex align_items_center">
+                    <view class="circular circular_red"></view>
+                    <view wx:if="{{transportType != '国际快递'}}" class="addressTo ellipsis">
+                        <!-- {{addressTo.countryRegion}}·{{addressTo.formattedAddress}} -->
+                        {{languageCountry[needPlan.cod]}}·{{addressTo.formattedAddress}}
+
+                    </view>
+                    <view wx:else class="addressFrom ellipsis">{{languageCountry[addressTo]}}</view>
+                </view>
+                <view class="plan_info_content clearFix">
+                    <image class="remark_icon left" bindtap="showRemarks" src="../image/icon/icon-attention.png" />
+                    <view class="remarks" bindtap="showRemarks">{{remarks}}</view>
+                    <van-dialog id="van-dialog" />
+                </view>
+            </view>
+        </card>
+        <view wx:if="{{transportType != '国际快递'}}" class="trade_terms clearFix" hover-class="clickColor" data-modaltype="tradeTerms" bindtap="showModal">
+            <view class="left trade_terms_title" disabled>{{language.tradeTerms}}</view>
+            <view class="right price_icon">
+                <van-icon name="arrow" color="#d9d9d9" />
+            </view>
+            <view class="right">{{baselanguage[lastTradeTermsSlected]}}</view>
+        </view>
+        <priceDetail totalPrice="{{common.getTotalPrice(needPlan,currency,lastTradeTermsSlected,formData)}}" languageFlag="{{languageFlag}}" wx:if="{{transportType != '国际快递'}}" language="{{language}}" needPlan="{{needPlan}}" currency="{{currency}}" />
+        <priceSubmit 
+            totalPrice="{{common.getTotalPrice(needPlan,currency,lastTradeTermsSlected,formData)}}" 
+            zIndex="{{priceSubmitZindex}}" isSubmit wx:if="{{needPlan}}" 
+            hasPriceDetail="{{transportType != '国际快递'&&lastTradeTermsSlected!='不选择'}}" 
+            priceModalShow="{{modalShow&&lastTradeTermsSlected!='不选择'}}" 
+            priceChange="{{priceChange}}"
+            bind:priceDetailShow="priceDetailShow" 
+            bind:onClick="handleCreate" price="{{price}}" 
+            needPlan="{{needPlan}}"></priceSubmit>
+
+    </scroll-view>
+</view>

@@ -1,0 +1,20 @@
+<!-- pages/price/price.wxml -->
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<view class="price">
+  <goods wx:if="{{query}}" query='{{query}}'></goods>
+  <view class="container_box">
+    <!-- 产品信息 -->
+    <view wx:if="{{allPlan.length>0}}" class="price_background">
+      <selectCard currency="{{currency}}" incoterms="{{incoterms}}" isShipperOrConsignee="{{isShipperOrConsignee}}" bind:onClick='handlePlanClick' wx:if="{{allPlan.length>0}}" allPlan="{{allPlan}}"></selectCard>
+      <!-- <view wx:else >暂无航线信息, 请联系客服</view> -->
+    </view>
+    <view wx:if="{{allPlan.length==0}}" class="notFound">
+      <image class="imagenotFound" src="../image/404.png"></image>
+      <view>{{language.businessScope}}</view>
+      <view>{{language.concat}}</view>
+      <view>{{language.phone}}</view>
+      <view class="notFound_phone" bindtap='handleCallPhone'>021-56876568</view>
+    </view>
+    <van-notify id="van-notify" />
+  </view>
+</view>

@@ -1,0 +1,27 @@
+{
+  "name": "jyy-wechat-mini-program-v2",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "@vant/weapp": "^1.2.2",
+    "currency-symbol-map": "^4.0.4",
+    "form-data": "^3.0.0",
+    "miniprogram-api-promise": "^1.0.4",
+    "regenerator-runtime": "^0.13.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EZtrans/jyy-wechat-mini-program-v2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EZtrans/jyy-wechat-mini-program-v2/issues"
+  },
+  "homepage": "https://github.com/EZtrans/jyy-wechat-mini-program-v2#readme",
+  "description": ""
+}

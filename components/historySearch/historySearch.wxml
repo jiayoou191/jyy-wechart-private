@@ -1,0 +1,37 @@
+<!-- components/historySearch/historySearch.wxml -->
+<view class="historySearch">
+    <!-- wx:if="{{searchHistory}}" -->
+    <view wx:if="{{searchHistory}}">
+        <view class="historySearch_title">
+            <view class="historySearch_title_label">{{language.historySearch}}</view>
+            <view wx:if="{{!isRubbishShow}}" class="historySearch_delete" bindtap='handleRubbishShow'>
+                <image src="../../pages/image/icon/icon-deleate.png"></image>
+            </view>
+            <view wx:else class="historySearch_delete_queren" bindtap='handleHistoryDeleate'>
+                {{language.confirm}}
+            </view>
+        </view>
+        <view class="historySearch_content">
+            <view wx:for="{{searchHistory}}" wx:if="{{index<4}}" wx:key="index" bindtap='handleClick' data-item="{{item}}" data-index="{{index}}" hover-class="historySearch_content_size_active" class="historySearch_content_size over">
+                <view class="historySearch_content_goods">
+                    <view  class="historySearch_content_goods_name">
+                        {{item.searchable_items[0].name=='国际文件'?languageBase[item.searchable_items[0].name]:item.searchable_items[0].name}}
+                    </view>
+                    <view wx:if="{{item.searchable_items.length>1}}">
+                        {{language.more}}{{item.searchable_items.length}}{{language.goodsCount}}
+                    </view>
+                </view>
+                <view class="historySearch_content_address">
+                    <view>{{item.from_address_json.formattedAddress}}</view>
+                    <view>
+                        <text decode="{{true}}">&nbsp;</text>
+                        ——
+                    </view>
+                    <text decode="{{true}}">&nbsp;</text>
+                    <view>{{item.to_address_json.formattedAddress}}</view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view wx:if="{{isMaskShow}}" bindtap="handleMaskClick" class='mask'></view>
+</view>

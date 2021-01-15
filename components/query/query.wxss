@@ -1,0 +1,353 @@
+/* components/query/query.wxss */
+.query {
+    height: 100%;
+}
+
+.box_choose {
+    /* width:343px; */
+    height: 62rpx;
+    line-height: 62rpx;
+    margin-right: 32rpx;
+    margin-bottom: 32rpx;
+
+    background: rgba(246, 246, 246, 1);
+    border-radius: 4px;
+    font-size: 26rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+    position: relative;
+}
+
+.box_choose_active {
+    background: rgba(246, 246, 246, 0.5);
+}
+
+.box_choose image {
+    margin-top: 19rpx;
+    margin-right: 20rpx;
+    width: 26rpx;
+    height: 30rpx;
+    float: right;
+}
+
+.box_choose_plan {
+    float: left;
+    padding-left: 20rpx;
+
+}
+
+.box_choose_plan_image {
+    width: 26rpx;
+    height: 38rpx;
+}
+
+.box_choose_number {
+    float: right;
+}
+
+
+
+.tab {
+    margin-top: 20rpx;
+    margin-left: 30rpx;
+    font-size: 40rpx;
+    overflow-y: auto;
+    padding-bottom: 32rpx;
+    box-sizing: border-box;
+}
+
+.tab_stage1 {
+    /* margin-bottom: 30rpx; */
+}
+
+.tab_stage1_tihuo {
+    font-size: 28rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+    height: 34rpx;
+    line-height: 34rpx;
+    margin-left: 32rpx;
+}
+
+.tab_stage1_tihuo_float {
+    float: left;
+}
+
+.tab_stage1_tihuo_maxwidth {
+    /* max-width: 200rpx; */
+    /* display: inline-block; */
+    /* width: 330rpx; */
+    /* max-width: 362rpx; */
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 26rpx;
+    /* text-overflow: ellipsis; */
+    /* height: 30rpx; */
+    /* line-height: 33rpx; */
+    /* padding-top: 2rpx; */
+}
+
+.tab_stage1_img {
+    /* width: 5rpx; */
+    /* height: 260rpx; */
+    float: left;
+    margin-right: 30rpx;
+    width: 34rpx;
+    height: 34rpx;
+    /* background:rgba(255,255,255,1);
+    border:5px solid rgba(20,168,40,1); */
+}
+
+.line_fee {
+    text-align: left;
+    margin-top: 4rpx;
+}
+
+.tab_stage1_line_father {
+    width: 34rpx;
+    height: 260rpx;
+    float: left;
+    /* margin: 0 auto; */
+    display: flex;
+    justify-content: center;
+}
+.tab_stage3_line_father{
+    width: 34rpx;
+    height: 280rpx;
+    float: left;
+    /* margin: 0 auto; */
+    display: flex;
+    justify-content: center;
+}
+.tab_stage1_line {
+    /* margin-top:20rpx ; */
+    margin: 0 auto;
+    width: 10rpx;
+    height: 260rpx;
+    /* margin-left: 12rpx; */
+    background: rgba(238, 238, 238, 1);
+    /* float: left; */
+}
+
+.tab_stage1_fee {
+    float: left;
+    /* margin-left: 45rpx; */
+    margin-top: 24rpx;
+    color: #ccc;
+    margin-left: 32rpx;
+    font-size: 24rpx;
+    font-weight: 400;
+    color: rgba(67, 67, 67, 1);
+}
+
+.tab_stage1_fee view {
+    margin-bottom: 8rpx;
+}
+
+.tab_stage1_fee_image {
+    /* display: block; */
+    width: 24rpx;
+    height: 24rpx;
+    /* vertical-align: top; */
+    /* vertical-align: middle; */
+    float: left;
+    /* padding-top: 6rpx; */
+    margin-right: 8rpx;
+}
+
+.tab_stage1_fee_attention {
+    font-size: 24rpx;
+    height: 24rpx;
+    line-height: 24rpx;
+    font-weight: 400;
+    /* height:38rpx; */
+    vertical-align: middle;
+    /* line-height: 38rpx; */
+    /* vertical-align: bottom; */
+    color: rgba(170, 170, 170, 1);
+}
+
+.tab_stage3_border {
+    /* padding-top: 24rpx; */
+    /* margin-top: 24rpx; */
+
+
+}
+
+.tab_stage3_border_all {
+    /* margin-top: 24rpx; */
+    background: rgba(242, 242, 244, 1);
+    margin-left: 26rpx;
+    width: 90%;
+    /* margin-right: 32rpx; */
+    border-radius: 20rpx;
+    font-size: 24rpx;
+    border-radius: 6px;
+
+    height: 60rpx;
+    line-height: 60rpx;
+    /* display: flex; */
+    /* justify-content: space-around; */
+    margin-top: 24rpx;
+}
+
+.tab_stage3_line_ship {
+    background: rgba(43, 51, 143, 1);
+    opacity: 0.39;
+    width: 10rpx;
+    /* height: 260rpx; */
+    height: 100%;
+    /* margin-left: 12rpx; */
+    /* float: left; */
+    margin-top: 0;
+}
+
+.tab_stage3_line_railway {
+    background: rgba(220, 62, 56, 1);
+    opacity: 0.39;
+    width: 10rpx;
+    /* height: 260rpx; */
+    height: 100%;
+    /* margin-left: 12rpx; */
+    /* float: left; */
+    margin-top: 0;
+}
+
+.tab_stage3_line_air {
+    background: rgba(52, 145, 226, 1);
+    opacity: 0.39;
+    width: 10rpx;
+    height: 100%;
+    /* margin-left: 12rpx; */
+    /* float: left; */
+    margin-top: 0;
+}
+
+.tab_stage3_line_express {
+    background: rgba(43, 51, 143, 1);
+    opacity: 0.39;
+    width: 10rpx;
+    height: 260rpx;
+    margin-top: 0;
+}
+
+.tab_stage3_border image {
+    float: left;
+    margin-left: 8rpx;
+    margin-right: 8rpx;
+    margin-top: 16rpx;
+    /* vertical-align:middle; */
+    width: 32rpx;
+    height: 32rpx;
+
+}
+
+.tab_stage3_border view {
+    float: left;
+    /* display: block; */
+}
+
+/* .tab_stage3_border_img_text{
+    vertical-align:middle;
+    display: inline;
+} */
+.tab_stage3_border .tab_stage3_border_carrier {
+    margin-left: 16rpx;
+}
+
+.tab_stage3_border .tab_stage3_border_days {
+    margin-left: 48rpx;
+    margin-right: 48rpx;
+
+}
+
+.tab_stage3_content {
+    display: block;
+    font-size: 24rpx;
+    font-weight: 400;
+    height: 180rpx;
+    overflow-y: auto;
+    color: rgba(67, 67, 67, 1);
+    margin-left: 58rpx;
+    margin-right: 45rpx;
+}
+
+.tab_stage3_content view {
+    margin-bottom: 8rpx;
+    margin-top: 8rpx;
+}
+
+.tab_stage3_content_changePlan {
+    color: blue;
+    font-size: 36rpx;
+}
+
+.kong_view {
+    height: 120rpx;
+    /* background: red; */
+}
+
+.attention_dialog {
+    font-size: 28rpx;
+    white-space: pre-line;
+    margin-top: 16rpx;
+    margin-left: 16rpx;
+    margin-right: 16rpx;
+}
+
+.attention_dialog_footer {
+    margin-bottom: 24rpx;
+    font-size: 28rpx;
+    white-space: pre-line;
+    margin-top: 16rpx;
+    margin-left: 16rpx;
+    margin-right: 16rpx;
+}
+
+
+.mosaic {
+    width: 72rpx;
+    height: 22rpx;
+}
+
+.flex_v2{
+    display: flex;
+}
+.flex_v2_child{
+    max-width: 538rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+.flex_v2_child_3{
+    max-width: 538rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.flex_v2_child_5{
+    max-width: 513rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.mar_right{
+    margin-right: 10rpx;
+}
+
+.over {
+    overflow: hidden;
+    zoom: 1;
+}
+.attentionFCL{
+    box-sizing: border-box;
+    padding: 0 32rpx 32rpx 32rpx;
+}
+.plan_Choose{
+    position: absolute;
+    top: 50%;
+    right: 63rpx;
+    transform: translateY(-50%);
+}

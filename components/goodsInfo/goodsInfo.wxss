@@ -1,0 +1,37 @@
+.goods_title {
+    height: 96rpx;
+    line-height: 96rpx;
+    background-color: white;
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding-left: 32rpx;
+    box-sizing: border-box;
+    font-size: 36rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+  }
+  .goods_show {
+    margin: 32rpx 0 0 30rpx;
+    font-size: 32rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+  }
+.goods_show_flex {
+    display: flex;
+    justify-content: space-between;
+    font-size: 28rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+    margin-bottom: 32rpx;
+    padding-right: 32rpx;
+    box-sizing: border-box;
+  }
+  .ellipsis{
+    /* style="width:260rpx;" */
+    max-width: 260rpx;
+    width: 260rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

@@ -1,0 +1,195 @@
+<view class="orderDetail">
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+    <goodsInfo modalShow="{{goodsShow}}" bind:handleClose="handleClose" title="{{language.goodsInfo}}" dataSource="{{order_detail.query.items}}" />
+    <van-popup show="{{ modalShow }}" custom-style="border-radius:24rpx 24rpx 0px 0px;overflow:hidden;" position="bottom" bind:close="onModalClose">
+        <view class="modal_container">
+            <view wx:if="{{modalType=='user'}}" class="overflow_auto padding" style="max-height:972rpx;">
+                <view class="modal_title">{{userItem}}</view>
+                <view class="info_item flex">
+                    <view class="info_item_label">{{language.name}}:</view>
+                    <view>{{order_detail[user_info_key].name}}</view>
+                </view>
+                <view class="info_item flex">
+                    <view class="info_item_label">{{language.address}}:</view>
+                    <view>{{order_detail[user_info_key].address}}</view>
+                </view>
+                <view class="info_item flex">
+                    <view class="info_item_label">{{language.phone}}:</view>
+                    <view>{{order_detail[user_info_key].phone}}</view>
+                </view>
+                <view class="info_item flex">
+                    <view class="info_item_label">{{language.email}}:</view>
+                    <view>{{order_detail[user_info_key].email}}</view>
+                </view>
+                <view class="margin_top padding_bottom flex">
+                    <view class="info_item_label">{{language.otherInfo}}:</view>
+                    <view class="text_wrap">{{order_detail[user_info_key].otherInfo}}</view>
+                </view>
+            </view>
+        </view>
+    </van-popup>
+    <view class="orderDetail_title">{{languageBase[order_detail.physicsStatus]}}</view>
+    <card title="{{language.goodsInfo}}" needAppend bind:showDetail="showGoodsInfo">
+        <view class="goods">
+            <view class="goods_title clearFix">
+                <text class="left">{{languageType[order_detail.query.itemType.name]}}</text>
+                <text class="light_color right">{{language.count}}{{order_detail.query.items.length}}{{language.piece}}</text>
+            </view>
+            <view wx:if="{{order_detail.query.itemType.id!='200602151639hY0VBhhU'}}" class="goods_item flex">
+                
+                <view class="goods_name goods_name_width">{{order_detail.query.items[0].name}}</view>
+                <view class="goods_name">{{order_detail.query.items[0].weight}}kg</view>
+                <view class="goods_weight">{{order_detail.query.items[0].volume}}m³</view>
+            </view>
+            <view wx:else class="goods_item flex">
+                <view class="goods_name">{{languageBase[order_detail.query.items[0].name]}}</view>
+                <view>
+                    {{order_detail.query.items[0].weight-0.5}}-{{order_detail.query.items[0].weight}}kg
+                </view>
+            </view>
+            <view wx:if="{{order_detail.plan.boxes.length>0}}" class="boxes_plan clearFix">
+                <view class="boxes_plan_label">{{language.boxPlan}}:</view>
+                <view class="box_item clearFix">
+                    <view wx:key="index" class="left clearFix" wx:for="{{order_detail.plan.boxes}}">
+                        <view class="left">{{common.boxesNameEnZh(item.boxDataEntry.name , languageName)}} *{{item.number}}</view>
+                        <view wx:if="{{index<order_detail.plan.boxes.length-1}}" class="left box_item_space">
+                            ,
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </card>
+    <card title="{{languageBase[order_detail.transportType]}}" icon="{{order_detail.iconUrl}}" minHeight="200">
+        <view class="plan_info">
+            <view class="flex align_items_center">
+                <view class="circular circular_green"></view>
+                <view wx:if="{{order_detail.transportType != 'Express'}}" class="addressFrom ellipsis">
+                <!-- {{item.plan.pod.length ==3?languageIata[item.plan.pod]:languagePort[item.plan.pod]}} -->
+                    {{languageCountry[order_detail.plan.col]}}·{{common.setAddressStr(order_detail.query.queryType=='All'||!(order_detail.doorToPortPlan&&order_detail.doorToPortPlan.address)?order_detail.query.from:order_detail.doorToPortPlan.address)}}
+                </view>
+                <view wx:else class="addressFrom ellipsis">
+                    {{languageCountry[order_detail.expressPlan.col]}}
+                </view>
+            </view>
+            <view class="plan_info_content">
+                <view wx:if="{{order_detail.transportType != 'Express'}}">
+               
+                    <view wx:if="{{languageFlag =='中文'}}" class="pol flex"><view  class="{{order_detail.plan.pol.length ==3?'max_width_3':'max_width_5'}} mar_right">{{order_detail.plan.polNameZh}} {{order_detail.plan.polNameEn}}</view>({{order_detail.plan.pol}})</view>
+                    <view wx:else class="pol flex"><view class="max_width mar_right" >{{languageFlag=='中文'?order_detail.plan.polNameZh:order_detail.plan.polNameEn}}</view>({{order_detail.plan.pol}})</view>
+
+                    <view class="supplier flex flex_space_between">
+                        <!-- <view >{{language.supplier}}</view> -->
+                        <view >{{order_detail.plan.stage3Plan.carrier}}</view>
+                        <view>{{language.wholeProcess}}{{order_detail.plan.stage3TransitTime}} {{language.day}}</view>
+                        <view>{{order_detail.transportType}}</view>
+                    </view>
+                    
+                    <!-- <view class="pod">{{order_detail.plan.pod.length==3?languageIata[order_detail.plan.pod]:languagePort[order_detail.plan.pod]}}</view> -->
+                    <view wx:if="{{languageName =='中文'}}" class="pod flex"><view  class="{{order_detail.plan.pod.length ==3?'max_width_3':'max_width_5'}} mar_right">{{order_detail.plan.podNameZh}} {{order_detail.plan.podNameEn}}</view>({{order_detail.plan.pod}})</view>
+                    <view wx:else class="pod flex"><view class="max_width mar_right" >{{order_detail.plan.podNameEn}}</view>({{order_detail.plan.pod}})</view>
+
+                </view>
+                <view wx:else>
+                    <view class="supplier flex flex_space_between">
+                        {{order_detail.expressPlan.carrier}}
+                        <view>{{language.wholeProcess}}{{order_detail.expressPlan.transitTime}}{{language.day}}</view>
+                        <view>{{order_detail.transportType}}</view>
+                    </view>
+                </view>
+            </view>
+            <view class="flex align_items_center">
+                <view class="circular circular_red"></view>
+                <view wx:if="{{order_detail.transportType != 'Express'}}" class="addressTo ellipsis">
+                    {{languageCountry[order_detail.plan.cod]}}·{{common.setAddressStr(order_detail.query.queryType=='All'||!(order_detail.portToDoorPlan&&order_detail.portToDoorPlan.address)?order_detail.query.to:order_detail.portToDoorPlan.address)}}
+                </view>
+                <view wx:else class="addressTo ellipsis">
+                    {{languageCountry[order_detail.expressPlan.cod]}}
+                </view>
+            </view>
+            <view  class="plan_info_content clearFix">
+                <image wx:if="{{remarks!=''}}" class="remark_icon left" bindtap="showRemarks" src="../image/icon/icon-attention.png" />
+                <view wx:if="{{remarks!=''}}" class="remarks" bindtap="showRemarks">{{remarks}}</view>
+                <van-dialog id="van-dialog" />
+            </view>
+        </view>
+    </card>
+    <view class="user_info">
+        <view hover-class="clickColor" data-modaltype="user" data-user-item="{{language.sendUser}}" bindtap="showModal" class="user_info_item border_bottom flex flex_space_between">
+            <view class="user_label">{{language.sendUser}}</view>
+            <view class="user_item">
+                <view class="width_200 flex">
+                    <view wx:if="{{shipperName.beforeTxt.length>0}}" class="ellipsis width_128">
+                        {{shipperName.beforeTxt}}
+                    </view>
+                    <view class="flex_grow">{{shipperName.afterTxt}}</view>
+                </view>
+                <view>{{order_detail.shipper.phone}}</view>
+                <view class="image_center">
+                    <van-icon name="arrow" color="#d9d9d9" />
+                </view>
+            </view>
+        </view>
+        <view hover-class="clickColor" data-modaltype="user" data-user-item="{{language.getUser}}" bindtap="showModal" class="user_info_item border_bottom flex flex_space_between">
+            <view class="user_label">{{language.getUser}}</view>
+            <view class="user_item">
+                <view class="width_200">
+                    <view class="width_200 flex">
+                        <view wx:if="{{consigneeName.beforeTxt.length>0}}" class="ellipsis width_128">
+                            {{consigneeName.beforeTxt}}
+                        </view>
+                        <view class="flex_grow">{{consigneeName.afterTxt}}</view>
+                    </view>
+                </view>
+                <view>{{order_detail.consignee.phone}}</view>
+                <view class="image_center">
+                    <van-icon name="arrow" color="#d9d9d9" />
+                </view>
+            </view>
+        </view>
+        <view hover-class="clickColor" data-modaltype="user" data-user-item="{{language.notify}}" bindtap="showModal" class="user_info_item flex flex_space_between">
+            <view class="user_label">{{language.notify}}</view>
+            <view class="user_item">
+                <view class="width_200">
+                    <view class="width_200 flex">
+                        <view wx:if="{{notifierName.beforeTxt.length>0}}" class="ellipsis width_128">
+                            {{notifierName.beforeTxt}}
+                        </view>
+                        <view class="flex_grow">{{notifierName.afterTxt}}</view>
+                    </view>
+                </view>
+                <view>{{order_detail.notifier.phone}}</view>
+                <view class="image_center">
+                    <van-icon name="arrow" color="#d9d9d9" />
+                </view>
+            </view>
+        </view>
+    </view>
+    <view wx:if="{{order_detail.transportType != 'Express'}}" class="trade_terms clearFix">
+        <view class="left trade_terms_title" disabled>{{language.tradeTerms}}</view>
+        <view class="right trade_terms_item">{{languageBase[order_detail.orderMeta.serviceType]}}</view>
+    </view>
+    <view wx:if="{{order_detail.transportType == 'Express'}}" class="trade_terms clearFix">
+        <view class="left trade_terms_title" disabled>{{language.price}}</view>
+        <view class="right price_color">{{order_detail.plan!=null?order_detail.plan.currency:order_detail.expressPlan.currency}}{{common.priceChangeShow(order_detail.priceValueText)}}</view>
+    </view>
+    <view wx:if="{{order_detail.transportType != 'Express'&&order_detail.orderMeta.orderUserRole}}" class="trade_terms clearFix">
+        <view class="left trade_terms_title" disabled>{{language.price}}</view>
+        <view class="right">{{common.priceChangeShow_v2(common.getOrderPrice(order_detail, 'CNY',order_detail.orderMeta.orderUserRole , false))}}</view>
+        <!-- <view wx:if="{{order_detail.orderMeta && order_detail.orderMeta.orderUserRole=='Shipper'}}" class="right">{{common.priceChangeShow_v2(common.getBuyerOrSellerPrice(order_detail.plan,'CNY',order_detail.orderMeta.serviceType,'buyer'))}}</view> -->
+        <!-- <view wx:if="{{order_detail.orderMeta && order_detail.orderMeta.orderUserRole=='Consignee'}}" class="right">{{common.getOrderPrice(order_detail, 'CNY',order_detail.orderMeta.orderUserRole , false)}}-{{common.priceChangeShow_v2(common.getBuyerOrSellerPrice(order_detail.plan,'CNY',order_detail.orderMeta.serviceType,'buyer'))}}</view> -->
+
+        <!-- <view class="right">{{common.priceChangeShow_v2(common.getBuyerOrSellerPrice(order_detail.plan,'CNY',order_detail.orderMeta.serviceType,'buyer'))}}</view> -->
+        
+        
+    </view>
+    <priceDetail languageFlag="{{languageFlag}}" wx:else language="{{language}}" needPlan="{{order_detail.plan}}" truckPlan="{{truckPlan}}" queryType="{{order_detail.query.queryType}}" currency="CNY" />
+    <view class="other_info flex">
+        <view class="margin_right_8">{{language.orderId}}</view>
+        <view>{{order_detail.displayId?order_detail.displayId:order_detail.id}}</view>
+    </view>
+    <view class="other_info flex">
+        <view class="margin_right_8">{{language.orderTime}}</view>
+        <view>{{order_detail.createdAt}}</view>
+    </view>
+</view>

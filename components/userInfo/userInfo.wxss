@@ -1,0 +1,52 @@
+.userInfo_content {
+    padding: 0 16rpx 24rpx 16rpx;
+}
+
+.formItem {
+    /* height: 96rpx; */
+    /* padding: 32rpx 0;
+    box-sizing: border-box; */
+    height: 96rpx;
+    line-height: 96rpx;
+    border-bottom: 1px solid #f5f5f5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.image_center {
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.errText {
+    color: red;
+}
+
+.flex_grow {
+    flex: 1;
+}
+
+.right_icon {
+    width: 34rpx;
+    height: 32rpx;
+}
+
+.address_book {
+    width: 48rpx;
+    height: 48rpx;
+}
+
+.formlabel {
+    width: 128rpx;
+    margin-right: 32rpx;
+}
+
+.well_click {
+    padding-left: 36rpx;
+}
+
+.clickColor {
+    background: rgba(242, 242, 244, 1);
+}

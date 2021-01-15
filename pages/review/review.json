@@ -1,0 +1,10 @@
+{
+  "usingComponents": {
+    "priceSubmit": "/components/priceSubmit/priceSubmit",
+    "card": "/components/card/card",
+    "goodsInfo": "../../components/goodsInfo/goodsInfo",
+    "priceDetail": "/components/priceDetail/priceDetail"
+  },
+  "navigationBarTitleText": "订单确认",
+  "backgroundColor": "#f2f2f4"
+}

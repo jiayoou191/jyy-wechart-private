@@ -1,0 +1,129 @@
+<wxs module="common" src="../../utils/common.wxs"></wxs>
+<view>
+<card  title="{{language.price}}" rightTitle="{{language.all_add}} {{totalPrice!=null?(currency+common.priceChangeShow_v2(totalPrice)):common.priceChangeShow_v2(common.getPriceValueDisplay(currency,needPlan,true,truckPlan,queryType,true))}}">
+    <view class="price_content">
+        <view wx:if="{{queryType=='All'||(truckPlan&&truckPlan.one)}}" class="price_item clearFix" data-modaltype="prices_start" hover-class="clickColor" bindtap="showModal">
+            <view class="left">{{language.departure}}</view>
+            <view class="right price_icon">
+                <van-icon name="arrow" color="#d9d9d9" />
+            </view>
+            <view class="right">{{common.priceChangeShow_v2(common.getStartEndPrice(needPlan,currency,'start',truckPlan))}}</view>
+        </view>
+        <view class="price_item clearFix" hover-class="clickColor">
+            <view class="left">{{language.trunkTransportation}}</view>
+            <view class="right price_icon">
+                <van-icon name="arrow" color="#d9d9d9" />
+            </view>
+            <view class="right">{{common.priceChangeShow_v2(common.getStartEndPrice(needPlan,currency,'port'))}}</view>
+        </view>
+        <view  wx:if="{{queryType=='All'||(truckPlan&&truckPlan.five)}}" class="price_item clearFix" data-modaltype="prices_end" hover-class="clickColor" bindtap="showModal">
+            <view class="left">{{language.destination}}</view>
+            <view class="right price_icon">
+                <van-icon name="arrow" color="#d9d9d9" />
+            </view>
+            <view class="right">{{common.priceChangeShow_v2(common.getStartEndPrice(needPlan,currency,'end',truckPlan))}}</view>
+        </view>
+    </view>
+</card>
+<van-popup show="{{ modalShow }}" custom-style="border-radius:24rpx 24rpx 0px 0px;overflow:hidden;" position="bottom" bind:close="onModalClose">
+    <view class="modal_container">
+        <view wx:if="{{modalType=='prices_start'}}" class="prices overflow_auto padding" style="max-height:972rpx;">
+            <view class="modal_title modal_bold goods_margin_bottom">{{language.departure}}</view>
+           
+            <view wx:if="{{common.getPlanNameFeeChildren(truckPlan&&truckPlan.one?truckPlan.one:needPlan.stage1Plan,'PortDeliveryFee',currency).length==1}}" class="clearFix portDeliveryFee">
+                <view class="left prices_title">{{language.inland}}</view>
+                <view class="right">
+                    {{common.priceChangeShow_v2(common.getPlanNameFee(truckPlan&&truckPlan.one?truckPlan.one:needPlan.stage1Plan,'PortDeliveryFee',currency))}}
+                </view>
+            </view>
+            <view wx:if="{{common.getPlanNameFeeChildren(truckPlan&&truckPlan.one?truckPlan.one:needPlan.stage1Plan,'PortDeliveryFee',currency).length>1}}">
+                <view class="prices_title prices_item">{{language.inland}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(truckPlan&&truckPlan.one?truckPlan.one:needPlan.stage1Plan,'PortDeliveryFee',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">
+                            {{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}
+                        </view>
+                    </view>
+                </view>
+            </view>
+            
+            <view wx:if="{{common.getPlanNameFeeChildren(needPlan.stage2Plan,'PortFee',currency).length>0}}">
+                <view class="prices_title prices_item">{{language.pier}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(needPlan.stage2Plan,'PortFee',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">
+                            {{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}
+                        </view>
+                    </view>
+                </view>
+            </view>
+            <view wx:if="{{common.getPlanNameFeeChildren(needPlan.stage2Plan,'DocumentationAndServiceFees',currency).length>0}}">
+                <view class="prices_title prices_item">{{language.document}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(needPlan.stage2Plan,'DocumentationAndServiceFees',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">{{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}</view>
+                    </view>
+                </view>
+            </view>
+            <view wx:if="{{common.getPlanNameFeeChildren(needPlan.stage2Plan,'CustomsClearanceAndManifestFees',currency).length>0}}">
+                <view class="prices_title prices_item">{{language.customs}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(needPlan.stage2Plan,'CustomsClearanceAndManifestFees',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">{{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}</view>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view wx:if="{{modalType=='prices_end'}}" class="prices overflow_auto padding" style="max-height:972rpx;">
+            <view class="modal_title modal_bold goods_margin_bottom">{{language.destination}}</view>
+            <view wx:if="{{common.getPlanNameFeeChildren(truckPlan&&truckPlan.five?truckPlan.five:needPlan.stage5Plan,'PortDeliveryFee',currency).length==1}}" class="clearFix portDeliveryFee">
+                <view class="left prices_title">{{language.inland}}</view>
+                <view class="right">
+                    {{common.priceChangeShow_v2(common.getPlanNameFee(truckPlan&&truckPlan.five?truckPlan.five:needPlan.stage5Plan,'PortDeliveryFee',currency))}}
+                </view>
+            </view>
+            <view wx:if="{{common.getPlanNameFeeChildren(truckPlan&&truckPlan.five?truckPlan.five:needPlan.stage5Plan,'PortDeliveryFee',currency).length>1}}">
+                <view class="prices_title prices_item">{{language.inland}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(truckPlan&&truckPlan.five?truckPlan.five:needPlan.stage5Plan,'PortDeliveryFee',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">{{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}</view>
+                    </view>
+                </view>
+            </view>
+
+            <view wx:if="{{common.getPlanNameFeeChildren(needPlan.stage4Plan,'PortFee',currency).length>0}}">
+                <view class="prices_title prices_item">{{language.pier}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(needPlan.stage4Plan,'PortFee',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">{{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}</view>
+                    </view>
+                </view>
+            </view>
+            <view wx:if="{{common.getPlanNameFeeChildren(needPlan.stage4Plan,'DocumentationAndServiceFees',currency).length>0}}">
+                <view class="prices_title prices_item">{{language.document}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(needPlan.stage4Plan,'DocumentationAndServiceFees',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">{{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}</view>
+                    </view>
+                </view>
+            </view>
+            <view wx:if="{{common.getPlanNameFeeChildren(needPlan.stage4Plan,'CustomsClearanceAndManifestFees',currency).length>0}}">
+                <view class="prices_title prices_item">{{language.customs}}</view>
+                <view class="clearFix">
+                    <view class="clearFix prices_item border_bottom" wx:for="{{common.getPlanNameFeeChildren(needPlan.stage4Plan,'CustomsClearanceAndManifestFees',currency)}}" wx:key="index">
+                        <view class="left">{{languageFlag=='中文'?(item.detailNameZh?item.detailNameZh:item.detailName):item.detailName}}</view>
+                        <view class="right">{{item.currency}}{{common.priceChangeShow_v2(common.fixed(item.value))}}</view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+</van-popup>
+</view>

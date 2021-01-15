@@ -1,0 +1,16 @@
+
+<view class="skeleton">
+    <view class="skeleton_title">
+        <view></view>
+        <view></view>
+    </view>
+    <view class="skeleton_content">
+        <view class="skeleton_content_avater"></view>
+        <view class="skeleton_content_input"></view>
+    </view>
+        <view class="skeleton_footer">
+        <view class="skeleton_footer_avater"></view>
+        <view class="skeleton_footer_input"></view>
+    </view>
+</view>
+

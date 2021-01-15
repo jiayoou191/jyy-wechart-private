@@ -1,0 +1,48 @@
+<van-toast id="van-toast" />
+<van-notify id="van-notify" />
+<view class="userInfo">
+    <view hover-class="clickColor" class="userInfo_title flex align_items_center">
+        <image class="userPhoto" src="{{userPhoto}}" mode="widthFix" />
+        <view class="nickName">{{nickName}}</view>
+    </view>
+    <view class="userInfo_order" hover-class="clickColor" bindtap="jumpMyOrder">
+        <view class="flex align_items_center">
+            <view class="menu_icon_parent">
+                <image class="menu_icon" src="../image/icon/icon-order.png" mode="widthFix" />
+            </view>
+            <view style="text_center">{{language.myOrder}}</view>
+        </view>
+        <image class="label_icon" src="../image/icon/icon-right.png" />
+    </view>
+    <view class="userInfo_menu">
+        <view hover-class="clickColor" data-code="{{item.code}}" bindtap="menuClick" class="menu_item flex" wx:for="{{menuList}}" wx:key="index">
+            <view class="menu_icon_parent">
+                <image class="menu_icon" src="{{item.icon}}" mode="widthFix" />
+            </view>
+            <view class="flex_grow flex flex_space_between align_items_center {{index<menuList.length-1?'border_bottom':''}}  padding">
+                <button wx:if="{{item.code=='contact'}}" class="contact" open-type="contact">
+                    {{item.label}}
+                </button>
+                <image wx:if="{{item.code=='contact'}}" class="contact_icon label_icon" src="../image/icon/icon-right.png" />
+                <view wx:else>{{item.label}}</view>
+                <image wx:if="{{item.append && item.code!='contact'}}" class="label_icon" src="../image/icon/icon-right.png" />
+                <view wx:if="{{!item.append}}" class="version">{{version}}</view>
+            </view>
+        </view>
+    </view>
+    <van-popup round position="bottom" custom-style="height: 40%;" show="{{ islanguageShow }}" bind:close="handleClose">
+        <div class="pop_height">1</div>
+        <div >
+            <van-radio-group value="{{ radio }}" bind:change="onChange">
+                <van-cell-group>
+                    <van-cell title="中文" clickable data-name="zh" bind:click="onClick">
+                        <van-radio checked-color="#DC3E38" slot="right-icon" name="zh" />
+                    </van-cell>
+                    <van-cell title="English" clickable data-name="en" bind:click="onClick">
+                        <van-radio checked-color="#DC3E38" slot="right-icon" name="en" />
+                    </van-cell>
+                </van-cell-group>
+            </van-radio-group>
+        </div>
+    </van-popup>
+</view>

@@ -1,0 +1,8 @@
+{
+  "usingComponents": {
+    "card": "/components/card/card",
+    "goodsInfo": "../../components/goodsInfo/goodsInfo",
+    "priceDetail": "/components/priceDetail/priceDetail"
+  },
+  "navigationBarTitleText": "订单详情"
+}

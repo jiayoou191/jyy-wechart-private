@@ -1,0 +1,37 @@
+<view class="moreGoods">
+				<view class="moreGoods_kong"></view>
+				<view class="item_type">
+								<scroll-view scroll-y="{{sysScroll}}">
+												<view wx:for="{{formInline}}" wx:key="index" class="item_type_goods_back over">
+																<view class="item_type_goods over">
+																				<van-cell-group>
+																								<view class="item_type_display">
+																												<van-field custom-style="width:550rpx;margin-bottom:20rpx;" value="{{ item.name }}" border="{{ false }}" data-index="{{index}}" bind:focus="handleFocus" data-name="名称" bind:change="handleChange" clearable='{{true}}' placeholder="{{language.please_choice}}" bind:blur="handleBlur" />
+																												<view wx:if="{{formInline.length>1 && !item.flag}}" data-index="{{index}}" bindtap="handleCheckDeleate" class="img_deleate_border">
+																																<image class="img_deleate" src="../../pages/image/icon/icon-deleate.png"></image>
+																												</view>
+																												<view wx:if="{{formInline.length>1 && item.flag}}" data-index="{{index}}" bindtap="handleDeleate" class="img_deleate_border_queren">
+																																{{language.confirm}}
+																												</view>
+																								</view>
+																								<view class="item_type_input over">
+																												<input value="{{ item.volume }}" data-index="{{index}}" data-name="体积" type="digit" bind:input="handleChange" placeholder="{{language.volume}}" class="item_type_goods_input" />
+																												<view class="input_size_label_right">m³</view>
+																								</view>
+																								<view class="item_type_input over item_type_input_kg">
+																												<input value="{{ item.weight }}" data-index="{{index}}" data-name="重量" type="digit" bind:input="handleChange" placeholder="{{language.weight}}" class="item_type_goods_input" />
+																												<view class="input_size_label_right">kg</view>
+																								</view>
+																				</van-cell-group>
+																</view>
+												</view>
+								</scroll-view>
+				</view>
+				<view class="item_type">
+								<view class="item_type_handlemore" hover-class="item_type_handlemore_active" bindtap="handleMore">
+												+{{language.add}}
+								</view>
+				</view>
+				<view class="item_type_goods_kong"></view>
+				<view wx:if="{{isMaskShow}}" bindtap="handleMaskClick" class='mask'></view>
+</view>

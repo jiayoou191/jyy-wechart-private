@@ -1,0 +1,59 @@
+.navigationBarCustom {
+    position: fixed;
+    top: 0;
+    background: #fff;
+    width: 100%;
+    z-index: 10;
+}
+
+.userPhoto {
+    width: 64rpx;
+    height: 64rpx;
+    border-radius: 50%;
+    position: absolute;
+    left: 32rpx;
+    bottom: 20rpx;
+}
+
+.navBar {
+    position: relative;
+}
+
+.lang{
+    height: 64rpx;
+    position: absolute;
+    left: 116rpx;
+    bottom: 20rpx;
+    font-size: 26rpx;
+    color:#484848;
+    /* background: red; */
+    padding-left: 10rpx;
+    padding-right: 10rpx;
+}
+.lang_active{
+    /* color: #DC3E38; */
+    background: #f5f5f5;
+}
+.language_photo{
+    width: 40rpx;
+    height: 40rpx;
+    /* background: yellow; */
+    /* vertical-align: bottom; */
+}
+.language_word{
+
+    /* height: 32rpx; */
+    line-height: 40rpx;
+    margin-left: 8rpx;
+
+    /* vertical-align: bottom; */
+    /* background: blue; */
+
+}
+.flex{
+    display: flex;
+    /* align-items:flex-end; */
+    align-items:center;
+    /* align-items: baseline; */
+
+}

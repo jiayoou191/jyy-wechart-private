@@ -1,0 +1,116 @@
+.bookPreview {
+    background: rgba(242, 242, 244, 1);
+    /* height: 100%; */
+    padding: 32rpx 32rpx 112rpx 32rpx;
+    box-sizing: border-box;
+    padding-bottom: 150rpx;
+    overflow-y: auto;
+    font-size: 24rpx;
+    font-weight: 400;
+    color: rgba(67, 67, 67, 1);
+}
+
+.position_bottom {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 112rpx;
+    background: rgba(255, 255, 255, 1);
+    box-shadow: 0px -2px 8px 0px rgba(0, 0, 0, 0.15);
+    box-sizing: border-box;
+    line-height: 112rpx;
+    z-index: 9;
+    font-size: 36rpx;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.timeOut {
+    color: rgba(220, 62, 56, 1);
+    font-size: 30rpx;
+    font-weight: 400;
+    width: 400rpx;
+    text-align: center;
+}
+
+.submit_parent {
+    width: 210rpx;
+    height: 88rpx;
+}
+
+.submit {
+    background: rgba(220, 62, 56, 1);
+    border-radius: 16rpx;
+    font-size: 36rpx;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+}
+
+.submit_timeOut {
+    background: #d9d9d9;
+    border-radius: 16rpx;
+    font-size: 36rpx;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 1);
+}
+
+.modal_container {
+    box-sizing: border-box;
+    font-weight: 400;
+    color: rgba(153, 153, 153, 1);
+    position: relative;
+    max-height: 972rpx;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 32rpx 32rpx 32rpx;
+    position: relative;
+}
+
+.modal_title {
+    height: 96rpx;
+    padding: 32rpx 0;
+    box-sizing: border-box;
+    font-weight: 500;
+    color: rgba(67, 67, 67, 1);
+    font-size: 32rpx;
+    position: sticky;
+    top: 0;
+    left: 0;
+    background: white;
+}
+
+.data_empty {
+    height: 144rpx;
+    text-align: center;
+    line-height: 144rpx;
+}
+
+.contacts_item {
+    height: 144rpx;
+    box-sizing: border-box;
+    border-bottom: 1px solid #f5f5ff;
+    padding: 32rpx 0;
+}
+
+.contacts_item_name {
+    font-weight: 400;
+    color: rgba(67, 67, 67, 1);
+    margin-right: 32rpx;
+}
+
+.contacts_item_address {
+    margin-top: 16rpx;
+}
+
+.clickColor {
+    background: rgba(242, 242, 244, 1);
+}
+
+.timeCount {
+    width: 180rpx;
+    text-align: center;
+}
